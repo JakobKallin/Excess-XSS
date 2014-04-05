@@ -464,17 +464,16 @@
 
 		<h5 id="blacklisting">Blacklisting</h5>
 
-		<p>Instinctively, it seems reasonable to perform validation by defining a forbidden pattern that should not appear in user input. If a string matches this pattern, it is then marked as invalid. An example would be to allow users to submit custom HTML that contains any elements except <code>&lt;script&gt;</code>. This classification strategy is called <em>blacklisting</em>.</p>
+		<p>Instinctively, it seems reasonable to perform validation by defining a forbidden pattern that should not appear in user input. If a string matches this pattern, it is then marked as invalid. An example would be to allow users to submit custom URLs with any protocol except <code>javascript:</code>. This classification strategy is called <em>blacklisting</em>.</p>
 
 		<p>However, blacklisting has two major drawbacks:</p>
 
 		<dl>
 		<dt>Complexity</dt>
-		<dd><p>Accurately describing the set of all possible malicious strings is a very complex task. The example policy described above could not be successfully implemented by simply searching for the substring "<code>&lt;script&gt;</code>", because this would miss strings of the form "<code>&lt;script &gt;</code>" and "<code>&lt;SCRIPT&gt;</code>". In a language as complex as HTML, many other such cases exist, and detecting all of them is very difficult.</p></dd>
+		<dd><p>Accurately describing the set of all possible malicious strings is usually a very complex task. The example policy described above could not be successfully implemented by simply searching for the substring "<code>javascript</code>", because this would miss strings of the form "<code>Javascript:</code>" (where the first letter is capitalized) and "<code>&amp;#106;avascript:</code>" (where the first letter is encoded as a numeric character reference).</p></dd>
 		<dt>Staleness</dt>
-		<dd><p>Even if a perfect blacklist were developed, it would fail if a new feature allowing malicious use were added to the browser. For example, a blacklist developed before the introduction of the HTML5 <code>onmousewheel</code> attribute would fail to stop an attacker from using that attribute to perform an XSS attack. This drawback is especially significant in web development, which is made up of many different technologies that are constantly being updated.</p></dd>
+		<dd><p>Even if a perfect blacklist were developed, it would fail if a new feature allowing malicious use were added to the browser. For example, an HTML validation blacklist developed before the introduction of the HTML5 <code>onmousewheel</code> attribute would fail to stop an attacker from using that attribute to perform an XSS attack. This drawback is especially significant in web development, which is made up of many different technologies that are constantly being updated.</p></dd>
 		</dl>
-
 
 		<p>Because of these drawbacks, blacklisting as a classification strategy is strongly discouraged. Whitelisting is usually a much safer approach, as we will describe next.</p>
 
@@ -482,15 +481,15 @@
 
 		<p><em>Whitelisting</em> is essentially the opposite of blacklisting: instead of defining a forbidden pattern, a whitelist approach defines an allowed pattern and marks input as invalid if it <em>does not</em> match this pattern.</p>
 		
-		<p>In contrast with the blacklisting example before, an example of whitelisting would be to allow users to submit custom HTML containing only the tags <code>&lt;em&gt;</code> and <code>&lt;strong&gt;</code>, nothing else. This approach would automatically mark input as invalid if it contained the tag <code>&lt;script&gt;</code>, even if it appeared as "<code>&lt;script &gt;</code>" or "<code>&lt;SCRIPT&gt;</code>".</p>
+		<p>In contrast with the blacklisting example before, an example of whitelisting would be to allow users to submit custom URLs containing only the protocols <code>http:</code> and <code>https:</code>, nothing else. This approach would automatically mark a URL as invalid if it had the protocol <code>javascript:</code>, even if it appeared as "<code>Javascript:</code>" or "<code>&amp;#106;avascript:</code>".</p>
 
 		<p>Compared to blacklisting, there are two major benefits of whitelisting:</p>
 
 		<dl>
 		<dt>Simplicity</dt>
-		<dd><p>Accurately describing a set of safe strings is generally much easier than identifying the set of all malicious strings. This is especially true in common situations where user input only needs to include a very limited subset of the functionality available in a browser. For example, defining a whitelist allowing only URLs starting with "<code>http://</code>" is very simple, and perfectly adequate for users in most situations.</p></dd>
+		<dd><p>Accurately describing a set of safe strings is generally much easier than identifying the set of all malicious strings. This is especially true in common situations where user input only needs to include a very limited subset of the functionality available in a browser. For example, the whitelist described above allowing only URLs with the protocols <code>http:</code> or <code>https:</code> is very simple, and perfectly adequate for users in most situations.</dd>
 		<dt>Longevity</dt>
-		<dd><p>Unlike a blacklist, a whitelist will generally not become obsolete when a new feature is added to the browser. For example, a whitelist allowing only the <code>title</code> attribute on HTML elements would remain safe even if it was developed before the introduction of HTML5 <code>onmousewheel</code> attribute.</p></dd>
+		<dd><p>Unlike a blacklist, a whitelist will generally not become obsolete when a new feature is added to the browser. For example, an HTML validation whitelist allowing only the <code>title</code> attribute on HTML elements would remain safe even if it was developed before the introduction of HTML5 <code>onmousewheel</code> attribute.</p></dd>
 		</dl>
 
 
@@ -507,7 +506,7 @@
 
 		<p>Of these two, rejection is the simplest approach to implement. That being said, sanitisation can be more useful since it allows a broader range of input from the user. For example, if a user submits a credit card number, a sanitisation routine that removes all non-digit characters would prevent code injection as well as allowing the user to enter the number either with or without hyphens.</p>
 
-		<p>If you decide to implement sanitisation, you must make sure that the sanitisation routine itself doesn't use a blacklisting approach. For example, the string "<code>&lt;p&gt;...&lt;/p&gt;&lt;SCRIPT&gt;...&lt;/SCRIPT&gt;</code>", even when identified as invalid using a whitelist approach, would get past a sanitisation routine that simply removes all instances of "<code>&lt;script&gt;</code>". For this reason, well-tested libraries and frameworks should be used for sanitisation whenever possible.</p>
+		<p>If you decide to implement sanitisation, you must make sure that the sanitisation routine itself doesn't use a blacklisting approach. For example, the URL "<code>Javascript:...</code>", even when identified as invalid using a whitelist approach, would get past a sanitisation routine that simply removes all instances of "<code>javascript:</code>". For this reason, well-tested libraries and frameworks should be used for sanitisation whenever possible.</p>
 
 		<h3 id="prevention-advice">Which prevention technique to use</h3>
 
