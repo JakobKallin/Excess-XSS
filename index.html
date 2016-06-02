@@ -1,127 +1,128 @@
 <!doctype html>
 <html>
 	<head>
-		<meta charset="utf-8">
-		<meta name="description" content="A comprehensive tutorial on cross-site scripting.">
-		<title>Excess XSS: A comprehensive tutorial on cross-site scripting</title>
-		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic,700italic">
-		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic,700italic">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="description" content="Комплексный учебник по межсайтовому скриптингу.">
+		<meta name="keywords" content="XSS, excess, учебник, описание, межсайтовый скриптинг, Cross-Site Scripting">
+		<title>Excess XSS: Комплексный учебник по межсайтовому скриптингу</title>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic,700italic">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic,700italic">
 		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
 		<header>
 			<h1>Excess XSS</h1>
-			<p class="subtitle">A comprehensive tutorial on cross-site scripting</p>
-			<p class="credits">Created by <a href="https://github.com/JakobKallin">Jakob Kallin</a> and <a href="http://se.linkedin.com/in/irenelobovalbuena">Irene Lobo Valbuena</a></p>
+			<p class="subtitle">Комплексный учебник по межсайтовому скриптингу</p>
+			<p class="credits">Авторы <a href="https://github.com/JakobKallin" target="_blank">Jakob Kallin</a> и <a href="https://se.linkedin.com/in/irenelobovalbuena" target="_blank">Irene Lobo Valbuena</a><br><br>Перевод на русский язык <a href="https://a888r.ru" target="_blank">A888R</a></p>
 		</header>
 		
 		<ol class="toc">
-			<li><a href="#xss-overview">Overview</a></li><!--
-			--><li><a href="#xss-attacks">XSS Attacks</a></li><!--
-			--><li><a href="#xss-prevention">Preventing XSS</a></li><!--
-			--><li><a href="#summary">Summary</a></li>
+			<li><a href="#xss-overview">Обзор</a></li><!--
+			--><li><a href="#xss-attacks">XSS-атака</a></li><!--
+			--><li><a href="#xss-prevention">Предотвращение XSS</a></li><!--
+			--><li><a href="#summary">Резюме</a></li>
 		</ol>
 
-		<h2 id="xss-overview">Part One: Overview</h2>
+		<h2 id="xss-overview">Часть первая: Обзор</h2>
 
-		<h3 id="xss-definition">What is XSS?</h3>
+		<h3 id="xss-definition">Что такое XSS?</h3>
 
-		<p>Cross-site scripting (XSS) is a code injection attack that allows an attacker to execute malicious JavaScript in another user's browser.</p>
+		<p>Межсайтовый скриптинг (<i>англ. Cross-site scripting</i>) - это атака нацеленная на внедрение кода, позволяющая злоумышленнику выполнить вредоносный JavaScript в браузере другого пользователя.</p>
 
-		<p>The attacker does not directly target his victim. Instead, he exploits a vulnerability in a website that the victim visits, in order to get the website to deliver the malicious JavaScript for him. To the victim's browser, the malicious JavaScript appears to be a legitimate part of the website, and the website has thus acted as an unintentional accomplice to the attacker.</p>
+		<p>Злоумышленник не атакует свою жертву напрямую. Вместо этого он использует уязвимость веб-сайта который посещает жертва и внедряет вредоносный JavaScript код. В браузере жертвы вредоносный JavaScript отображается как легитимная часть веб-сайта, а сам веб-сайт выступает в качестве непосредственного соучастника атакующего.</p>
 
-		<h3 id="javascript-injection">How the malicious JavaScript is injected</h3>
+		<h3 id="javascript-injection">Внедрение вредоносного JavaScript кода</h3>
 
-		<p>The only way for the attacker to run his malicious JavaScript in the victim's browser is to inject it into one of the pages that the victim downloads from the website. This can happen if the website directly includes user input in its pages, because the attacker can then insert a string that will be treated as code by the victim's browser.</p>
+		<p>Единственный способ для атакующего запустить вредоносный JavaScript в браузере жертвы - это внедрить его в одну из страниц, которую загружает жертва с веб-сайта. Это возможно, если веб-сайт позволяет пользователям вводить данные на своих страницах, а атакующий сможет вставить строку, которая будет определятся как часть кода в браузере жертвы.</p>
 
-		<p>In the example below, a simple server-side script is used to display the latest comment on a website:</p>
+		<p>В приведенном ниже примере показан простой серверный скрипт, который используется для отображения последнего комментария на сайте:</p>
 
 		<p class="code">
 			<code>
 				print <span class="string">"&lt;html&gt;"</span><br>
-				print <span class="string">"Latest comment:"</span><br>
+				print <span class="string">"Последний комментарий:"</span><br>
 				print database.latestComment<br>
 				print <span class="string">"&lt;/html&gt;"</span>
 			</code>
 		</p>
 
-		<p>The script assumes that a comment consists only of text. However, since the user input is included directly, an attacker could submit this comment: "<code>&lt;script&gt;...&lt;/script&gt;</code>". Any user visiting the page would now receive the following response:</p>
+		<p>Скрипт предполагает, что комментарий состоит только из текста. Однако, так как включен непосредственный пользовательский ввод, злоумышленник может оставить этот комментарий: "<code>&lt;script&gt;...&lt;/script&gt;</code>". Любой пользователь, посетивший страницу, теперь будет получать следующий ответ:</p>
 
 		<p class="code">
 			<code>
 				<span class="html">&lt;html&gt;</span><br>
-				Latest comment:<br>
+				Последний комментарий:<br>
 				<strong class="malicious">&lt;script&gt;...&lt;/script&gt;</strong><br>
 				<span class="html">&lt;/html&gt;</span>
 			</code>
 		</p>
 
-		<p>When the user's browser loads the page, it will execute whatever JavaScript code is contained inside the <code>&lt;script&gt;</code> tags. The attacker has now succeeded with his attack.</p>
+		<p>Когда браузер пользователя загружает страницу, он будет выполнять все, в том числе JavaScript-код, содержащийся внутри тегов <code>&lt;script&gt;</code>. Атакующий успешно провел атаку.</p>
 
-		<h3 id="malicious-javascript-definition">What is malicious JavaScript?</h3>
+		<h3 id="malicious-javascript-definition">Что такое вредоносный JavaScript?</h3>
 
-		<p>At first, the ability to execute JavaScript in the victim's browser might not seem particularly malicious. After all, JavaScript runs in a very restricted environment that has extremely limited access to the user's files and operating system. In fact, you could open your browser's JavaScript console right now and execute any JavaScript you want, and you would be very unlikely to cause any damage to your computer.</p>
+		<p>Возможность выполнения JavaScript в браузере жертвы может показаться не особенно вредоносной. JavaScript работает в очень ограниченной среде, которая имеет крайне ограниченный доступ к файлам пользователя и операционной системы. На самом деле, вы можете открыть консоль JavaScript в своем браузере прямо сейчас и выполнить любой JavaScript который хотите, и очень маловероятно, что вы сможете причинить какой-либо вред вашему компьютеру.</p>
 
-		<p>However, the possibility of JavaScript being malicious becomes more clear when you consider the following facts:</p>
+		<p>Тем не менее, возможности JavaScript-кода в качестве вредоносного становятся более понятными, если учесть следующие факты:</p>
 
 		<ul>
-		<li><p>JavaScript has access to some of the user's sensitive information, such as cookies.</p></li>
-		<li><p>JavaScript can send HTTP requests with arbitrary content to arbitrary destinations by using <code>XMLHttpRequest</code> and other mechanisms.</p></li>
-		<li><p>JavaScript can make arbitrary modifications to the HTML of the current page by using DOM manipulation methods.</p></li>
+		<li><p>JavaScript имеет доступ к некоторой конфиденциальной информации пользователя, например куки (cookies).</p></li>
+		<li><p>JavaScript может отправлять HTTP-запросы с произвольным содержанием в произвольном направлении, используя <code>XMLHttpRequest</code> и другие механизмы.</p></li>
+		<li><p>JavaScript может делать произвольные изменения в HTML-коде текущей страницы с помощью методов манипулирования DOM.</p></li>
 		</ul>
 
-		<p>These facts combined can cause very serious security breaches, as we will explain next.</p>
+		<p>В случае комбинирования эти факты могут вызвать очень серьезные нарушения правил безопасности, подробности будут далее.</p>
 
-		<h3 id="malicious-javascript-consequences">The consequences of malicious JavaScript</h3>
+		<h3 id="malicious-javascript-consequences">Последствия вредоносного JavaScript-кода</h3>
 
-		<p>Among many other things, the ability to execute arbitrary JavaScript in another user's browser allows an attacker to perform the following types of attacks:</p>
+		<p>Кроме этого, возможность выполнить произвольный JavaScript в браузере другого пользователя позволяет злоумышленнику осуществить следующие типы атак:</p>
 
 		<dl>
-			<dt>Cookie theft</dt>
-			<dd><p>The attacker can access the victim's cookies associated with the website using <code>document.cookie</code>, send them to his own server, and use them to extract sensitive information like session IDs.</p></dd>
-			<dt>Keylogging</dt>
-			<dd><p>The attacker can register a keyboard event listener using <code>addEventListener</code> and then send all of the user's keystrokes to his own server, potentially recording sensitive information such as passwords and credit card numbers.</p></dd>
-			<dt>Phishing</dt>
-			<dd><p>The attacker can insert a fake login form into the page using DOM manipulation, set the form's <code>action</code> attribute to target his own server, and then trick the user into submitting sensitive information.</p></dd>
+			<dt>Кража куки</dt>
+			<dd><p> злоумышленник может получить доступ к куки-записям жертвы, связанным с веб-сайтом, используя <code>document.cookie</code>, отправить их на свой собственный сервер и использовать их для извлечения конфиденциальной информации, такой как идентификаторы сеансов.</p></dd>
+			<dt>Кейлоггер</dt>
+			<dd><p>злоумышленник может зарегистрировать слушателя событий клавиатуры, используя <code>addEventListener</code>, а затем отправить все нажатия клавиш пользователя на свой сервер, потенциально записав конфиденциальную информацию, например, пароли и номера кредитных карт.</p></dd>
+			<dt>Фишинг</dt>
+			<dd><p>злоумышленник может вставить поддельную форму для входа на страницу, используя манипуляции DOM, установив <code>action</code> атрибуты формы на свой собственный сервер, а затем обмануть пользователя для получения конфиденциальной информации.</p></dd>
 		</dl>
 
-		<p>Although these attacks differ significantly, they all have one crucial similarity: because the attacker has injected code into a page served by the website, the malicious JavaScript is executed in the context of that website. This means that it is treated like any other script from that website: it has access to the victim's data for that website (such as cookies) and the host name shown in the URL bar will be that of the website. For all intents and purposes, the script is considered a legitimate part of the website, allowing it to do anything that the actual website can.</p>
+		<p>Хотя эти атаки существенно различаются, все они имеют одно существенное сходство: так как злоумышленник внедряет код на страницу обслуживаемую сайтом, вредоносный JavaScript выполняется в контексте этого веб-сайта. Это означает, что он рассматривается как любой другой сценарий с этого сайта: он имеет доступ к данным жертвы для этого веб-сайта (например куки-записи) и имя хоста отображаемое в строке URL будет то же, что и у веб-сайта. Для всех целей сценарий считается законной частью веб-сайта, что позволяет ему делать всё, что может делать сам веб-сайт.</p>
 
-		<p>This fact highlights a key issue:</p>
+		<p> Этот факт подчеркивает ключевую проблему:</p>
 
-		<p class="important"><em>If an attacker can use your website to execute arbitrary JavaScript in another user's browser, the security of your website and its users has been compromised.</em></p>
+		<p class="important"><em>Если злоумышленник может использовать ваш веб-сайт, для выполнения произвольного JavaScript-кода в браузере других пользователей, безопасность вашего веб-сайта и его пользователей скомпрометирована.</em></p>
 
-		<p>To emphasize this point, some examples in this tutorial will leave out the details of a malicious script by only showing <code class="malicious">&lt;script&gt;...&lt;/script&gt;</code>. This indicates that the mere presence of a script injected by the attacker is the problem, regardless of which specific code the script actually executes.</p>
+		<p>Чтобы подчеркнуть этот момент, некоторые примеры вредоносного скрипта в этом учебнике будут оставаться без подробностей, используя <code class="malicious">&lt;script&gt;...&lt;/script&gt;</code>. Это свидетельствует о том, что простое присутствие скрипта, внедряемого атакующим является проблемой, независимо от того, какой конкретный код сценария на самом деле выполняется.</p>
 
-		<h2 id="xss-attacks">Part Two: XSS Attacks</h2>
+		<h2 id="xss-attacks">Часть вторая: XSS-атака</h2>
 
-		<h3 id="xss-actors">Actors in an XSS attack</h3>
+		<h3 id="xss-actors">Участники XSS-атаки</h3>
 
-		<p>Before we describe in detail how an XSS attack works, we need to define the actors involved in an XSS attack. In general, an XSS attack involves three actors: <strong>the website</strong>, <strong>the victim</strong>, and <strong>the attacker</strong>.</p>
+		<p>Перед тем, как подробно описать как работает атака XSS, нам необходимо определить субъектов участвующих в атаке XSS. В общем, в атаке XSS присутствует три участника: <strong>веб-сайт</strong>, <strong>жертва</strong>, и <strong>взломщик</strong>.</p>
 
 		<ul>
 			<li>
-				<p><strong>The website</strong> serves HTML pages to users who request them. In our examples, it is located at <code>http://website/</code>.</p>
+				<p><strong>Веб-сайт</strong> выдает HTML-страницы для пользователей запросивших их. В наших примерах он находится по адресу <code>http://website/</code>.</p>
 				<ul>
-					<li><p><strong>The website's database</strong> is a database that stores some of the user input included in the website's pages.</p></li>
+					<li><p><strong>База данных веб-сайта</strong> является базой данных, которая хранит некоторые введенные пользователями данные на страницах сайта.</p></li>
 				</ul>
 			</li>
 			<li>
-				<p><strong>The victim</strong> is a normal user of the website who requests pages from it using his browser.</p>
+				<p><strong>Жертва</strong> - это обычный пользователь веб-сайта, который запрашивает страницы у него с помощью своего браузера.</p>
 			</li>
 			<li>
-				<p><strong>The attacker</strong> is a malicious user of the website who intends to launch an attack on the victim by exploiting an XSS vulnerability in the website.</p>
+				<p><strong>Атакующий</strong> - это злоумышленник, который намеревается начать атаку на жертву за счет использования XSS-уязвимости на сайте.</p>
 				<ul>
 					<li>
-						<p><strong>The attacker's server</strong> is a web server controlled by the attacker for the sole purpose of stealing the victim's sensitive information. In our examples, it is located at <code>http://attacker/</code>.</p>
+						<p><strong>Сервер взломщика</strong> - это веб-сервер под контролем злоумышленника с единственной целью - кража конфиденциальной информации жертвы. В наших примерах, он находится по адресу <code>http://attacker/</code>.</p>
 					</li>
 				</ul>
 			</li>
 		</ul>
 
-		<h3 id="example-attack-scenario">An example attack scenario</h3>
+		<h3 id="example-attack-scenario">Пример сценария атаки</h3>
 
-		<p>In this example, we will assume that the attacker's ultimate goal is to steal the victim's cookies by exploiting an XSS vulnerability in the website. This can be done by having the victim's browser parse the following HTML code:</p>
+		<p>В этом примере мы будем считать, что конечной целью атакующего является кража куки жертвы, эксплуатируя XSS-уязвимость веб-сайта. Это произойдет если браузер жертвы обработает следующий код:</p>
 
 		<p class="code">
 			<code>
@@ -131,439 +132,436 @@
 			</code>
 		</p>
 
-		<p>This script navigates the user's browser to a different URL, triggering an HTTP request to the attacker's server. The URL includes the victim's cookies as a query parameter, which the attacker can extract from the request when it arrives to his server. Once the attacker has acquired the cookies, he can use them to impersonate the victim and launch further attacks.</p>
+		<p>Этот скрипт создаст HTTP-запрос на другой URL-адрес, который перенаправит браузер пользователя на сервер атакующего. URL-адрес включает в себя куки жертвы в качестве параметра запроса, когда HTTP-запрос приходит на сервер атакующего, злоумышленник может извлечь эти куки из запроса. После того, как злоумышленник получил куки, - он может использовать их, чтобы выдать себя за жертву и начать последующее нападение.</p>
 
-		<p>From now on, the HTML code above will be referred to as <strong>the malicious string</strong> or <strong>the malicious script</strong>. It is important to note that the string itself is only malicious if it ultimately gets parsed as HTML in the victim's browser, which can only happen as the result of an XSS vulnerability in the website.</p>
+		<p>С этого момента, показанный выше HTML код будет называться <strong>вредоносной строкой</strong> или <strong>вредоносным скриптом</strong>. Важно понимать, что сама строка является вредоносной только если она, в конечном счете, обрабатывается как HTML-код в браузере жертвы, а это может произойти только в случае наличия XSS-уязвимости на веб-сайте.</p>
 
-		<h4 id="example-attack-description">How the example attack works</h4>
+		<h4 id="example-attack-description">Как работает этот пример атаки</h4>
 
-		<p>The diagram below illustrates how this example attack can be performed by an attacker:</p>
+		<p>На схеме ниже показан пример выполнения атаки злоумышленником:</p>
 
 		<figure class="image">
-			<img src="persistent-xss.png" alt="Diagram of a persistent XSS attack">
+			<img src="persistent-xss.png" alt="Схема хранимой XSS-атаки">
 			<figcaption>
 				<ol>
 					<li>
-						<p>The attacker uses one of the website's forms to insert a malicious string into the website's database.</p>
+						<p>Атакующий использует одну из форм веб-сайта для того, чтобы вставить вредоносную строку в базу данных веб-сайта.</p>
 					</li>
 					<li>
-						<p>The victim requests a page from the website.</p>
+						<p>Жертва запрашивает страницу с веб-сайта.</p>
 					</li>
 					<li>
-						<p>The website includes the malicious string from the database in the response and sends it to the victim.</p>
+						<p>Сайт включает вредоносную строку из базы данных в ответ и отправляет его к жертве.</p>
 					</li>
 					<li>
-						<p>The victim's browser executes the malicious script inside the response, sending the victim's cookies to the attacker's server.</p>
+						<p>Браузер жертвы выполняет вредоносный сценарий внутри ответа, отправляя куки жертвы на сервер злоумышленника.</p>
 					</li>
 				</ol>
 			</figcaption>
 		</figure>
 
-		<h3 id="xss-types">Types of XSS</h3>
+		<h3 id="xss-types">Типы XSS</h3>
 
-		<p>While the goal of an XSS attack is always to execute malicious JavaScript in the victim's browser, there are few fundamentally different ways of achieving that goal. XSS attacks are often divided into three types:</p>
+		<p>Цель XSS-атаки всегда заключается в выполнении вредоносного JavaScript скрипта в браузере жертвы. Существует несколько принципиально различных способов достижения этой цели. XSS-атаки часто подразделяются на три типа:</p>
 		
 		<ul>
 			<li>
-				<p><strong>Persistent XSS</strong>, where the malicious string originates from the website's database.</p>
+				<p><strong>Хранимые (постоянные) XSS</strong>, где вредоносная строка берет свое начало из базы данных веб-сайта.</p>
 			</li>
 			<li>
-				<p><strong>Reflected XSS</strong>, where the malicious string originates from the victim's request.</p>
+				<p><strong>Отражённые (непостоянные) XSS</strong>, где вредоносная строка порождается из запроса жертвы.</p>
 			</li>
 			<li>
-				<p><strong>DOM-based XSS</strong>, where the vulnerability is in the client-side code rather than the server-side code.</p>
+				<p><strong>DOM-модели XSS</strong>, где уязвимость возникает в коде на стороне клиента, а не на стороне серверного кода.</p>
 			</li>
 		</ul>
 
-		<p>The previous example illustrated a persistent XSS attack. We will now describe the other two types of XSS attacks: reflected XSS and DOM-based XSS.</p>
+		<p>В предыдущем примере показана хранимая XSS-атака. Теперь мы опишем два других типа XSS-атак: отраженный XSS и XSS-атака DOM-модели.</p>
 
-		<h4 id="reflected-xss">Reflected XSS</h4>
+		<h4 id="reflected-xss">Отражённый XSS</h4>
 
-		<p>In a reflected XSS attack, the malicious string is part of the victim's request to the website. The website then includes this malicious string in the response sent back to the user. The diagram below illustrates this scenario:</p>
+		<p>В случае отраженной XSS-атаки вредоносная строка является частью запроса жертвы к веб-сайту. Сайт принимает и вставляет эту вредоносную строку в отправляемый ответ обратно пользователю. Схема ниже иллюстрирует этот сценарий:</p>
 
 		<figure class="image">
-			<img src="reflected-xss.png" alt="Diagram of a persistent XSS attack">
+			<img src="reflected-xss.png" alt="Схема отраженной XSS-атаки">
 			<figcaption>
 				<ol>
-					<li><p>The attacker crafts a URL containing a malicious string and sends it to the victim.</p></li>
-					<li><p>The victim is tricked by the attacker into requesting the URL from the website.</p></li>
-					<li><p>The website includes the malicious string from the URL in the response.</p></li>
-					<li><p>The victim's browser executes the malicious script inside the response, sending the victim's cookies to the attacker's server.</p></li>
+					<li><p>Атакующий создает URL-адрес, содержащий вредоносную строку, и отправляет его жертве.</p></li>
+					<li><p> Жертва обманным путем атакующего отправляет URL-запрос на веб-сайт.</p></li>
+					<li><p>Сайт включает вредоносную строку из URL-запроса в ответ жертве.</p></li>
+					<li><p>Браузер жертвы выполняет вредоносный сценарий, содержащийся в ответе, посылая куки жертвы на сервер злоумышленника.</p></li>
 				</ol>
 			</figcaption>
 		</figure>
 
-		<h5 id="reflected-xss-viability">How can reflected XSS succeed?</h5>
+		<h5 id="reflected-xss-viability">Как успешно провести отраженную XSS-атаку?</h5>
 
-		<p>At first, reflected XSS might seem harmless because it requires the victim himself to actually send a request containing a malicious string. Since nobody would willingly attack himself, there seems to be no way of actually performing the attack.</p>
+		<p>Отраженная XSS-атака может показаться безобидной, поскольку она требует чтобы жертва от своего имени отправила запрос, содержащий вредоносную строку. Так как никто не будет добровольно атаковать себя, то кажется, что не существует способа фактического выполнения атаки.</p>
 
-		<p>As it turns out, there are at least two common ways of causing a victim to launch a reflected XSS attack against himself:</p>
+		<p>Как выясняется, есть по крайней мере два распространенных способа заставить жертву начать отраженную XSS-атаку против себя:</p>
 
 		<ul>
-		<li><p>If the user targets a specific individual, the attacker can send the malicious URL to the victim (using e-mail or instant messaging, for example) and trick him into visiting it.</p></li>
-		<li><p>If the user targets a large group of people, the attacker can publish a link to the malicious URL (on his own website or on a social network, for example) and wait for visitors to click it.</p></li>
+		<li><p>Если пользователь является конкретной личностью, злоумышленник может отправить вредоносную URL-ссылку жертве (например с помощью электронной почты или мессенджера), и обманом заставить его открыть ссылку для посещения веб-сайта.</p></li>
+		<li><p>Если цель - это большая группа пользователей, злоумышленник может опубликовать ссылку на вредоносный URL (например на своем собственном веб-сайте или в социальной сети) и ждать посетителей которые перейдут по ссылке.</p></li>
 		</ul>
 
+		<p>Оба эти метода похожи, и оба они могут быть более успешными с использованием  служб позволяющих "укоротить" URL-адрес, они замаскируют вредоносную строку от пользователей, которые могли бы идентифицировать ее.</p>
 
-		<p>These two methods are similar, and both can be more successful with the use of a URL shortening service, which masks the malicious string from users who might otherwise identify it.</p>
+		<h4 id="dom-based-xss">XSS в DOM-модели</h4>
 
-		<h4 id="dom-based-xss">DOM-based XSS</h4>
-
-		<p>DOM-based XSS is a variant of both persistent and reflected XSS. In a DOM-based XSS attack, the malicious string is not actually parsed by the victim's browser until the website's legitimate JavaScript is executed. The diagram below illustrates this scenario for a reflected XSS attack:</p>
+		<p>XSS в DOM-модели представляет собой вариант как хранимой и отраженной XSS-атаки.В этой XSS-атаке вредоносная строка не обрабатывается браузером жертвы, пока настоящий JavaScript веб-сайта не выполнится. Схема ниже иллюстрирует этот сценарий для отраженной XSS-атаки:</p>
 
 		<figure class="image">
-			<img src="dom-based-xss.png" alt="Diagram of a DOM-based XSS attack">
+			<img src="dom-based-xss.png" alt="Схема XSS-атаки в DOM-модели">
 			<figcaption>
 				<ol>
-					<li><p>The attacker crafts a URL containing a malicious string and sends it to the victim.</p></li>
-					<li><p>The victim is tricked by the attacker into requesting the URL from the website.</p></li>
-					<li><p>The website receives the request, but does not include the malicious string in the response.</p></li>
-					<li><p>The victim's browser executes the legitimate script inside the response, causing the malicious script to be inserted into the page.</p></li>
-					<li><p>The victim's browser executes the malicious script inserted into the page, sending the victim's cookies to the attacker's server.</p></li>
+					<li><p>Атакующий создадет URL-адрес, содержащий вредоносную строку, и отправляет его жертве.</p></li>
+					<li><p>Жертва обманным путем атакующего отправляет URL-запрос к веб-сайту.</p></li>
+					<li><p>Сайт принимает запрос, но не включает в ответ вредоносную строку.</p></li>
+					<li><p>Браузер жертвы выполняет легитимный сценарий, содержащийся в ответе, в результате чего вредоносный скрипт будет вставлен в страницу.</p></li>
+					<li><p>Браузер жертвы выполняет вредоносный скрипт, вставленный в страницу, посылая куки жертвы на сервер злоумышленника.</p></li>
 				</ol>
 			</figcaption>
 		</figure>
 
-		<h5 id="dom-based-xss-difference">What makes DOM-based XSS different</h5>
+		<h5 id="dom-based-xss-difference">В чем отличие XSS в DOM-модели?</h5>
 
-		<p>In the previous examples of persistent and reflected XSS attacks, the server inserts the malicious script into the page, which is then sent in a response to the victim. When the victim's browser receives the response, it assumes the malicious script to be part of the page's legitimate content and automatically executes it during page load as with any other script.</p>
+		<p>В предыдущих примерах хранимых и отраженных XSS-атак сервер вставляет вредоносный скрипт на страницу, которая затем пересылается в ответе к жертве. Когда браузер жертвы получил ответ, он предполагает, что вредоносный скрипт является частью легитимного содержания страницы, и автоматически выполняет его во время загрузки страницы, как и любой другой сценарий.</p>
 
-		<p>In the example of a DOM-based XSS attack, however, there is no malicious script inserted as part of the page; the only script that is automatically executed during page load is a legitimate part of the page. The problem is that this legitimate script directly makes use of user input in order to add HTML to the page. Because the malicious string is inserted into the page using <code>innerHTML</code>, it is parsed as HTML, causing the malicious script to be executed.</p>
+		<p>В примере XSS-атаки в DOM-модели вредоносный скрипт не вставляется как часть страницы; единственный скрипт, который автоматически выполняется во время загрузки страницы является легитимной частью страницы. Проблема заключается в том, что этот легитимный сценарий напрямую использует пользовательский ввод для того, чтобы добавить HTML на страницу. Поскольку вредоносная строка вставляется в страницу с помощью <code>innerHTML</code>, она анализируется как HTML, в результате чего вредоносный скрипт будет выполняться.</p>
 
-		<p>The difference is subtle but important:</p>
+		<p>Это различие небольшое, но очень важное:</p>
 
 		<ul>
-		<li><p>In traditional XSS, the malicious JavaScript is executed when the page is loaded, as part of the HTML sent by the server.</p></li>
-		<li><p>In DOM-based XSS, the malicious JavaScript is executed at some point after the page has loaded, as a result of the page's legitimate JavaScript treating user input in an unsafe way.</p></li>
+		<li><p>В традиционном XSS вредоносный JavaScript выполняется при загрузке страницы, как часть HTML, отправленного сервером.</p></li>
+		<li><p>В случае XSS в DOM-модели вредоносный JavaScript выполняется после загрузки страницы, в результате эта страница с легитимным JavaScript обращается небезопасным способом к пользовательскому вводу (содержащему вредоносную строку).</p></li>
 		</ul>
 
 
-		<h5 id="dom-based-xss-significance">Why DOM-based XSS matters</h5>
+		<h5 id="dom-based-xss-significance">Как работает XSS в DOM-модели?</h5>
 
-		<p>In the previous example, JavaScript was not necessary; the server could have generated all the HTML by itself. If the server-side code were free of vulnerabilities, the website would then be safe from XSS.</p>
+		<p>В предыдущем примере нет необходимости в JavaScript; сервер может генерировать все HTML сам по себе. Если код на стороне сервера не содержал бы уязвимостей, веб-сайт не был бы подвержен уязвимости XSS.</p>
 
-		<p>However, as web applications become more advanced, an increasing amount of HTML is generated by JavaScript on the client-side rather than by the server. Any time content needs to be changed without refreshing the entire page, the update must be performed using JavaScript. Most notably, this is the case when a page is updated after an AJAX request.</p>
+		<p>Однако, так как веб-приложения становятся более продвинутыми, все большее количество HTML-страниц генерируется с помощью JavaScript на стороне клиента, а не на сервере. В любое время контент должен изменятся без обновления всей страницы, это возможно с использованием JavaScript. В частности, это тот случай, когда страница обновляется после AJAX запроса.</p>
 
-		<p>This means that XSS vulnerabilities can be present not only in your website's server-side code, but also in your website's client-side JavaScript code. Consequently, even with completely secure server-side code, the client-side code might still unsafely include user input in a DOM update after the page has loaded. If this happens, the client-side code has enabled an XSS attack through no fault of the server-side code.</p>
+		<p>Это означает, что XSS уязвимости могут присутствовать не только в серверной части кода вашего сайта, но и на стороне JavaScript-кода  клиента вашего сайта. Следовательно, даже при полностью безопасном коде на стороне сервера, - клиентский код может все еще не безопасно включать ввод пользовательских данных при обновлении DOM после загрузки страницы. Если это произойдет, то код со стороны клиента позволит провести XSS-атаку не по вине кода со стороны сервера.</p>
 
-		<h4 id="dom-based-xss-invisible-to-server">DOM-based XSS invisible to the server</h4>
+		<h4 id="dom-based-xss-invisible-to-server">XSS на основе DOM-модели может быть невидим для сервера</h4>
 
-		<p>There is a special case of DOM-based XSS in which the malicious string is never sent to the website's server to begin with: when the malicious string is contained in a URL's fragment identifier (anything after the <code>#</code> character). Browsers do not send this part of the URL to servers, so the website has no way of accessing it using server-side code. The client-side code, however, has access to it and can thus cause XSS vulnerabilities by handling it unsafely.</p>
+		<p>Существует особый случай XSS-атаки в DOM-модели, в котором вредоносная строка никогда не отправляется на сервер веб-сайта: это происходит тогда, когда вредоносная строка содержится в фрагменте идентификатора URL-адреса (что-либо после символа <code>#</code>). Браузеры не отправляют эту часть URL-адреса на сервер, так что веб-сайт не имеет доступа к нему с помощью кода на стороне сервера. Код со стороны клиента, однако, имеет доступ к нему, и, таким образом, возможно проведение XSS-атаки путем небезопасной обработки.</p>
 
-		<p>This situation is not limited to fragment identifiers. Other user input that is invisible to the server includes new HTML5 features like LocalStorage and IndexedDB.</p>
+		<p>Этот случай не ограничивается идентификатором фрагмента. Существует и другой пользовательский ввод, который является невидимым для сервера, например, новые функции HTML5, такие как LocalStorage и IndexedDB.</p>
 
-		<h2 id="xss-prevention">Part Three: Preventing XSS</h2>
+		<h2 id="xss-prevention">Часть третья:<br>Предотвращение XSS</h2>
 
-		<h3 id="xss-prevention-methods">Methods of preventing XSS</h3>
+		<h3 id="xss-prevention-methods">Методы предотвращения XSS</h3>
 
-		<p>Recall that an XSS attack is a type of code injection: user input is mistakenly interpreted as malicious program code. In order to prevent this type of code injection, secure input handling is needed. For a web developer, there are two fundamentally different ways of performing secure input handling:</p>
+		<p>Напомним, что XSS является атакой типа внедрения кода: введенные данные пользователем ошибочно интерпретируются как вредоносный программный код. Для того, чтобы не допустить этого типа инъекции кода, требуется безопасная обработка ввода. Для веб-разработчика, существует два принципиально различных способа выполнения безопасной обработки ввода:</p>
 
 		<ul>
-		<li><p><strong>Encoding</strong>, which escapes the user input so that the browser interprets it only as data, not as code.</p></li>
-		<li><p><strong>Validation</strong>, which filters the user input so that the browser interprets it as code without malicious commands.</p></li>
+		<li><p><strong>Кодирование</strong> — это способ который позволяет произвести ввод данных пользователем только как данные и не позволяет браузеру обработку как кода.</p></li>
+		<li><p><strong>Валидация</strong> — это способ фильтрует пользовательский ввод так, что браузер интерпретирует его как код без вредоносных команд.</p></li>
 		</ul>
 
 
-		<p>While these are fundamentally different methods of preventing XSS, they share several common features that are important to understand when using either of them:</p>
+		<p>Хотя это принципиально разные методы предотвращения XSS, они имеют несколько общих черт, которые являются важными для понимания при использовании любого из них:</p>
 
 		<dl>
-		<dt>Context</dt>
-		<dd><p>Secure input handling needs to be performed differently depending on where in a page the user input is inserted.</p></dd>
-		<dt>Inbound/outbound</dt>
-		<dd><p>Secure input handling can be performed either when your website receives the input (inbound) or right before your website inserts the input into a page (outbound).</p></dd>
-		<dt>Client/server</dt>
-		<dd><p>Secure input handling can be performed either on the client-side or on the server-side, both of which are needed under different circumstances.</p></dd>
+		<dt>Контекст</dt>
+		<dd><p>Безопасная обработка ввода должна быть выполнена по-разному в зависимости от того, где на странице используется пользовательский ввод.</p></dd>
+		<dt>входящий/исходящий</dt>
+		<dd><p>Безопасная обработка ввода может быть выполнена либо, когда ваш сайт получает входные данные (входящий трафик) или прямо перед тем, как сайт вставляет пользовательский ввод в содержимое страницы (исходящий).</p></dd>
+		<dt>Клиент/Сервер</dt>
+		<dd><p>Безопасная обработка ввода может быть выполнена либо на стороне клиента, либо на стороне сервера, каждый вариант необходим при различных обстоятельствах.</p></dd>
 		</dl>
 
 
-		<p>Before explaining in detail how encoding and validation work, we will describe each of these points.</p>
+		<p>Прежде чем объяснять в деталях как работает кодирование и валидация мы опишем каждый из этих пунктов.</p>
 
-		<h4 id="input-handling-contexts">Input handling contexts</h4>
+		<h4 id="input-handling-contexts">Обработка пользовательского ввода в контекстах</h4>
 
-		<p>There are many contexts in a web page where user input might be inserted. For each of these, specific rules must be followed so that the user input cannot break out of its context and be interpreted as malicious code. Below are the most common contexts:</p>
+		<p>Есть много контекстов на веб-странице, где может быть применен пользовательский ввод. Для каждого из них должны быть соблюдены особые правила для того, чтобы пользовательский ввод не мог «вырваться» из своего контекста и не мог быть интерпретирован как вредоносный код. Ниже приведены наиболее распространенные контексты: </p>
 
 		<figure>
 			<table>
 				<thead>
 					<tr>
-						<th>Context</th>
-						<th>Example code</th>
+						<th>Контекст</th>
+						<th>Пример кода</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td>HTML element content</td>
+						<td>Контент в виде HTML элемента</td>
 						<td><code>&lt;div&gt;<var class="input">userInput</var>&lt;/div&gt;</code></td>
 					</tr>
 					<tr>
-						<td>HTML attribute value</td>
+						<td>Атрибуты значений в HTML</td>
 						<td><code>&lt;input value="<var class="input">userInput</var>"&gt;</code></td>
 					</tr>
 					<tr>
-						<td>URL query value</td>
+						<td>Значения в URL-запросе</td>
 						<td><code>http://example.com/?parameter=<var class="input">userInput</var></code></td>
 					</tr>
 					<tr>
-						<td>CSS value</td>
+						<td>Значения с CSS</td>
 						<td><code>color: <var class="input">userInput</var></code></td>
 					</tr>
 					<tr>
-						<td>JavaScript value</td>
+						<td>Значения в JavaScript</td>
 						<td><code>var name = "<var class="input">userInput</var>";</code></td>
 					</tr>
 				</tbody>
 			</table>
 		</figure>
 
-		<h5 id="context-significance">Why context matters</h5>
+		<h5 id="context-significance">Какое значение имеют контексты?</h5>
 
-		<p>In all of the contexts described, an XSS vulnerability would arise if user input were inserted before first being encoded or validated. An attacker would then be able to inject malicious code by simply inserting the closing delimiter for that context and following it with the malicious code.</p>
+		<p>Во всех описанных контекстах уязвимость приводящая к XSS может возникнуть если вводимые пользователем данные были вставлены до первого кодирования или валидации. Злоумышленник может внедрить вредоносный код просто вставив закрывающий разделитель для этого контекста и следом за ним вредоносный код.</p>
 
-		<p>For example, if at some point a website inserts user input directly into an HTML attribute, an attacker would be able to inject a malicious script by beginning his input with a quotation mark, as shown below:</p>
+		<p>Например, если в какой-то момент веб-сайт включает ввод данных пользователем непосредственно в атрибут HTML, злоумышленник сможет внедрить вредоносный сценарий, начав свой ввод с кавычки, как показано ниже:</p>
 
 		<figure>
 			<table>
 				<tbody>
 					<tr>
-						<th>Application code</th>
+						<th>Код приложения</th>
 						<td><code>&lt;input value="<var class="input">userInput</var>"&gt;</code></td>
 					</tr>
 					<tr>
-						<th>Malicious string</th>
+						<th>Вредоносная строка</th>
 						<td><code class="malicious">"&gt;&lt;script&gt;...&lt;/script&gt;&lt;input value="</code></td>
 					</tr>
 					<tr>
-						<th>Resulting code</th>
+						<th>Конечный код</th>
 						<td><code>&lt;input value="<strong class="malicious">"&gt;&lt;script&gt;...&lt;/script&gt;&lt;input value="</strong>"&gt;</code></td>
 					</tr>
 				</tbody>
 			</table>
 		</figure>
 
-		<p>This could be prevented by simply removing all quotation marks in the user input, and everything would be fine—but only in this context. If the same input were inserted into another context, the closing delimiter would be different and injection would become possible. For this reason, secure input handling always needs to be tailored to the context where the user input will be inserted.</p>
+		<p>Это можно было бы предотвратить, просто удалив все кавычки в пользовательском вводе, и все было бы хорошо, но только в этом контексте. Если же ввод был вставлен в другой контекст, закрывающий разделитель будет отличаться и инъекция станет возможной. По этой причине, безопасная обработка ввода всегда должна быть адаптирована к контексту, где будет вставлен пользовательский ввод.</p>
 
-		<h4 id="inbound-outbound-input-handling">Inbound/outbound input handling</h4>
+		<h4 id="inbound-outbound-input-handling">Обработка входящего/исходящего пользовательского ввода</h4>
 
-		<p>Instinctively, it might seem that XSS can be prevented by encoding or validating all user input as soon as your website receives it. This way, any malicious strings should already have been neutralized whenever they are included in a page, and the scripts generating HTML will not have to concern themselves with secure input handling.</p>
+		<p>Инстинктивно, может показаться, что XSS можно предотвратить с помощью кодирования или валидации всего пользовательского ввода, как только наш сайт получает его. Таким образом, любые вредоносные строки уже будут нейтрализованы всякий раз, когда они будут включатся в страницу, и скриптам генерации HTML не придется заботиться о безопасной обработке пользовательского ввода.</p>
 
-		<p>The problem is that, as described previously, user input can be inserted into several contexts in a page. There is no easy way of determining when user input arrives which context it will eventually be inserted into, and the same user input often needs to be inserted into different contexts. Relying on inbound input handling to prevent XSS is thus a very brittle solution that will be prone to errors. (The deprecated "<a href="http://php.net/manual/en/security.magicquotes.php">magic quotes</a>" feature of PHP is an example of such a solution.)</p>
+		<p>Проблема состоит в том, что как было описано ранее, вводимые пользователем данные могут быть вставлены в несколько контекстов на странице. И нет простого способа определить, когда пользовательский ввод приходит в контекст - как он в конечном итоге будет вставлен, и тот же пользовательский ввод часто должен быть вставлен в различных контекстах. Опираясь на обработку входящего ввода для предотвращения XSS, мы создаем очень хрупкое решение, которое будет подвержено ошибкам. (Устаревшие "<a href="http://php.net/manual/en/security.magicquotes.php">волшебные кавычки</a>" PHP являются примером такого решения.)</p>
 
-		<p>Instead, outbound input handling should be your primary line of defense against XSS, because it can take into account the specific context that user input will be inserted into. That being said, inbound validation can still be used to add a secondary layer of protection, as we will describe later.</p>
+		<p>Вместо этого, обработка исходящего ввода должна быть вашей основной линией защиты от XSS, потому что он может принимать во внимание конкретный контекст, какие вводимые пользователем данные будут вставлены. В какой то степени, входящую валидацию можно использовать для добавления вторичного слоя защиты, но об этом позже.</p>
 
-		<h4 id="input-handling-location">Where to perform secure input handling</h4>
+		<h4 id="input-handling-location">Где возможно выполнять безопасную обработку пользовательского ввода</h4>
 
-		<p>In most modern web applications, user input is handled by both server-side code and client-side code. In order to protect against all types of XSS, secure input handling must be performed in both the server-side code and the client-side code.</p>
+		<p>В большинстве современных веб-приложений, пользовательский ввод обрабатывается как на стороне серверного кода, так и на стороне  кода клиента. В целях защиты от всех типов XSS, безопасная обработка ввода должна быть выполнена как в коде на стороне сервера, так и на стороне кода клиента.</p>
 
 		<ul>
-		<li><p>In order to protect against traditional XSS, secure input handling must be performed in server-side code. This is done using any language supported by the server.</p></li>
-		<li><p>In order to protect against DOM-based XSS where the server never receives the malicious string (such as <a href="#dom-based-xss-invisible-to-server">the fragment identifier attack described earlier</a>), secure input handling must be performed in client-side code. This is done using JavaScript.</p></li>
+		<li><p>В целях защиты от традиционных XSS, безопасная обработка ввода должна быть выполнена в коде на стороне сервера. Это делается с помощью какого-либо языка, поддерживаемого сервером.</p></li>
+		<li><p>В целях защиты от XSS-атаки в DOM-модели, где сервер никогда не получает вредоносную строку (например, описанная ранее <a href="#dom-based-xss-invisible-to-server">атака через фрагмент идентификатора</a>), безопасная обработка ввода должна быть выполнена в коде на стороне клиента. Это делается с помощью JavaScript.</p></li>
 		</ul>
 
 
-		<p>Now that we have explained why context matters, why the distinction between inbound and outbound input handling is important, and why secure input handling needs to be performed in both client-side code and server-side code, we will go on to explain how the two types of secure input handling (encoding and validation) are actually performed.</p>
-
-		<!-- The above might be better in a bullet list on its own page, summing up everything about encoding/validation so far. -->
+		<p>Теперь, когда мы объяснили, почему контекст имеет значение, почему различие между входящей и исходящей обработкой ввода имеет важное значение, и почему безопасная обработка ввода должна быть выполнена с обеих сторон, и на стороне клиента и на стороне сервера, мы можем продолжить чтобы объяснить, каким образом два типа безопасной обработки ввода (кодирование и валидация) выполняются фактически.</p>
 
 
-		<h3 id="encoding">Encoding</h3>
+		<h3 id="encoding">Кодирование</h3>
 
-		<p>Encoding is the act of escaping user input so that the browser interprets it only as data, not as code. The most recognizable type of encoding in web development is HTML escaping, which converts characters like <strong><code>&lt;</code></strong> and <strong><code>&gt;</code></strong> into <strong><code>&amp;lt;</code></strong> and <strong><code>&amp;gt;</code></strong>, respectively.</p>
+		<p>Кодирование является способом выхода из ситуации когда необходимо что бы пользовательский ввод данных браузер интерпретировал только как данные, а не код. Самый популярный тип кодирования в веб-разработке, это маскирование HTML, который преобразует символы, такие как <strong><code>&lt;</code></strong> и <strong><code>&gt;</code></strong> в <strong><code>&amp;lt;</code></strong> и <strong><code>&amp;gt;</code></strong> соответственно.</p>
 
-		<p>The following pseudocode is an example of how user input could be encoded using HTML escaping and then inserted into a page by a server-side script:</p>
+		<p>Следующий псевдокод является примером того, как вводимые пользователем данные (пользовательский ввод) могут быть закодированы с использованием HTML маскирования и затем вставлены в страницу с помощью серверного сценария:</p>
 
 		<p class="code">
 			<code>
 				print <span class="string">"&lt;html&gt;"</span><br>
-				print <span class="string">"Latest comment: "</span><br>
+				print <span class="string">"Последний комментарий: "</span><br>
 				print encodeHtml(userInput)<br>
 				print <span class="string">"&lt;/html&gt;"</span>
 			</code>
 		</p>
 
-		<p>If the user input were the string <code class="malicious">&lt;script&gt;...&lt;/script&gt;</code>, the resulting HTML would be as follows:</p>
+		<p>Если пользователь введет следующую строку <code class="malicious">&lt;script&gt;...&lt;/script&gt;</code>, результирующий HTML будет выглядеть следующим образом:</p>
 
 		<p class="code">
 			<code>
 				<span class="html">&lt;html&gt;</span><br>
-				Latest comment:<br>
+				Последний комментарий:<br>
 				<strong class="safe">&amp;lt;script&amp;gt;...&amp;lt;/script&amp;gt;</strong><br>
 				<span class="html">&lt;/html&gt;</span>
 			</code>
 		</p>
 
-		<p>Because all characters with special meaning have been escaped, the browser will not parse any part of the user input as HTML.</p>
+		<p>Потому что все символы со специальным значением были замаскированны, браузер не будет разбирать какую-либо часть пользовательского ввода, как HTML.</p>
 
-		<h4 id="encoding-location">Encoding in client-side and server-side code</h4>
+		<h4 id="encoding-location">Кодирование кода на стороне клиента и сервера</h4>
 
-		<p>When performing encoding in your client-side code, the language used is always JavaScript, which has built-in functions that encode data for different contexts.</p>
+		<p>При выполнении кодирования кода со стороны клиента, всегда используется язык JavaScript, который имеет встроенные функции которые кодируют данные для разных контекстов.</p>
 
-		<p>When performing encoding in your server-side code, you rely on the functions available in your server-side language or framework. Due to the large number of languages and frameworks available, this tutorial will not cover the details of encoding in any specific server-side language or framework. However, familiarity with the encoding functions used on the client-side in JavaScript is useful when writing server-side code as well.</p>
+		<p>При выполнении кодирования в вашем коде на стороне сервера, вы полагаетесь на функции доступные в вашем языке или фреймворке. Из-за большого количества языков и доступных фреймворков, данное учебное пособие не будет охватывать детали кодирования в каком-либо конкретном языке сервера или фреймворка. Тем не менее функции кодирования JavaScript используемые на стороне клиента также используются при написании кода на стороне сервера.</p>
 
-		<h5 id="client-side-encoding">Encoding on the client-side</h5>
+		<h5 id="client-side-encoding">Кодирование на стороне клиента</h5>
 
-		<p>When encoding user input on the client-side using JavaScript, there are several built-in methods and properties that automatically encode all data in a context-aware manner:</p>
+		<p>При кодировании пользовательского ввода на стороне клиента с помощью JavaScript есть несколько встроенных методов и свойств, которые автоматически кодируют все данные в контекстно-зависимый стиль:</p>
 
 		<figure>
 			<table>
 				<thead>
 					<tr>
-						<th>Context</th>
-						<th>Method/property</th>
+						<th>Контекст</th>
+						<th>Метод/свойство</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td>HTML element content</td>
+						<td>Контент в виде HTML элемента</td>
 						<td><code><var>node</var>.textContent = <var class="input">userInput</var></code></td>
 					</tr>
 					<tr>
-						<td>HTML attribute value</td>
+						<td>Атрибуты значений в HTML</td>
 						<td><code><var>element</var>.setAttribute(<var>attribute</var>, <var class="input">userInput</var>)</code><br>or<br><code><var>element</var>[<var>attribute</var>] = <var class="input">userInput</var></code></td>
 					</tr>
 					<tr>
-						<td>URL query value</td>
+						<td>Значения в URL-запросе</td>
 						<td><code>window.encodeURIComponent(<var class="input">userInput</var>)</code></td>
 					</tr>
 					<tr>
-						<td>CSS value</td>
+						<td>Значения с CSS</td>
 						<td><code><var>element</var>.style.<var>property</var> = <var class="input">userInput</var></code></td>
 					</tr>
 				</tbody>
 			</table>
 		</figure>
 
-		<p>The last context mentioned above (JavaScript values) is not included in this list, because JavaScript provides no built-in way of encoding data to be included in JavaScript source code.</p>
+		<p>Последний контекст уже упоминавшийся выше (значения в JavaScript) не входит в этот список, потому что JavaScript не предоставляет встроенный способ кодирования данных, который будет включен в исходный код JavaScript.</p>
 
-		<h4 id="encoding-limitations">Limitations of encoding</h4>
+		<h4 id="encoding-limitations">Ограничения кодирования</h4>
 
-		<p>Even with encoding, it will be possible to input malicious strings into some contexts. A notable example of this is when user input is used to provide URLs, such as in the example below:</p>
+		<p>Даже при кодировании возможно использование злонамеренных строк в некоторых контекстах. Ярким примером этого является то, когда пользовательский ввод используется для предоставления URL-адреса, например, в приведенном ниже примере:</p>
 
 		<p class="code"><code>document.querySelector('a').href = <var class="input">userInput</var></code></p>
 
-		<p>Although assigning a value to the <code>href</code> property of an anchor element automatically encodes it so that it becomes nothing more than an attribute value, this in itself does not prevent the attacker from inserting a URL beginning with "<code class="malicious">javascript:</code>". When the link is clicked, whatever JavaScript is embedded inside the URL will be executed.</p>
+		<p>Хотя указанное значение в свойстве элемента <code>href</code> автоматически кодирует его так, что он становится не более, чем значение атрибута, это само по себе не мешает злоумышленнику вставить URL, начинающийся с "<code class="malicious">javascript:</code>". При щелчке по ссылке, независимо от построения, встроенный JavaScript внутри URL будет выполнен.</p>
 
-		<p>Encoding is also an inadequate solution when you actually want the user to define part of a page's code. An example is a user profile page where the user can define custom HTML. If this custom HTML were encoded, the profile page could consist only of plain text.</p>
+		<p>Кодирование также не эффективное решение, когда вы хотите чтобы пользователи могли использовать часть HTML-кодов на странице. Примером может служить страница профиля пользователя, где пользователь может использовать пользовательский HTML. Если этот обычный HTML будет закодирован, страница профиля сможет состоять только из простого текста.</p11>
 
-		<p>In situations like these, encoding has to be complemented with validation, which we will describe next.</p>
+		<p>В подобных ситуациях, кодирование должно быть дополнено валидацией, с которой мы познакомимся далее.</p>
 
-		<h3 id="validation">Validation</h3>
+		<h3 id="validation">Валидация</h3>
 
-		<p>Validation is the act of filtering user input so that all malicious parts of it are removed, without necessarily removing all code in it. One of the most recognizable types of validation in web development is allowing some HTML elements (such as <code>&lt;em&gt;</code> and <code>&lt;strong&gt;</code>) but disallowing others (such as <code>&lt;script&gt;</code>).</p>
+		<p>Валидация является актом фильтрации пользовательского ввода таким образом, чтобы все вредоносные его части были удалены, без необходимости удаления всего кода в нем. Один из самых используемых видов проверки в веб-разработке позволяет использовать некоторые HTML-элементы (например, <code>&lt;em&gt;</code> и <code>&lt;strong&gt;</code>) но запретив другие (например, <code>&lt;script&gt;</code>).</p>
 
-		<p>There are two main characteristics of validation that differ between implementations:</p>
+		<p>Существуют две основные характерные проверки, которые различаются своими реализациями:</p>
 
 		<dl>
-		<dt>Classification strategy</dt>
-		<dd><p>User input can be classified using either blacklisting or whitelisting.</p></dd>
-		<dt>Validation outcome</dt>
-		<dd><p>User input identified as malicious can either be rejected or sanitised.</p></dd>
+		<dt>Стратегия классификации</dt>
+		<dd><p>Пользовательский ввод может быть классифицирован с использованием черных либо и белых списков.</p></dd>
+		<dt>Результат валидации</dt>
+		<dd><p>Пользовательский ввод идентифицированный как вредоносный может быть отклонен или продезинфицирован.</p></dd>
 		</dl>
 
 
-		<h4 id="classification-strategy">Classification strategy</h4>
+		<h4 id="classification-strategy">Стратегия классификации</h4>
 
-		<h5 id="blacklisting">Blacklisting</h5>
+		<h5 id="blacklisting">Черный список</h5>
 
-		<p>Instinctively, it seems reasonable to perform validation by defining a forbidden pattern that should not appear in user input. If a string matches this pattern, it is then marked as invalid. An example would be to allow users to submit custom URLs with any protocol except <code>javascript:</code>. This classification strategy is called <em>blacklisting</em>.</p>
+		<p>Инстинктивно, представляется целесообразным выполнить проверку путем определения запрещенного шаблона, который не должен появляться в пользовательском вводе. Если строка соответствует этому шаблону, она помечается как недействительная. Например позволить пользователям отправлять пользовательские URL-адреса с любым протоколом, за исключением <code>javascript:</code>. Эта стратегия классификации называется <em>черный список</em>.</p>
 
-		<p>However, blacklisting has two major drawbacks:</p>
+		<p>Тем не менее, черный список имеет два основных недостатка:</p>
 
 		<dl>
-		<dt>Complexity</dt>
-		<dd><p>Accurately describing the set of all possible malicious strings is usually a very complex task. The example policy described above could not be successfully implemented by simply searching for the substring "<code>javascript</code>", because this would miss strings of the form "<code>Javascript:</code>" (where the first letter is capitalized) and "<code>&amp;#106;avascript:</code>" (where the first letter is encoded as a numeric character reference).</p></dd>
-		<dt>Staleness</dt>
-		<dd><p>Even if a perfect blacklist were developed, it would fail if a new feature allowing malicious use were added to the browser. For example, an HTML validation blacklist developed before the introduction of the HTML5 <code>onmousewheel</code> attribute would fail to stop an attacker from using that attribute to perform an XSS attack. This drawback is especially significant in web development, which is made up of many different technologies that are constantly being updated.</p></dd>
+		<dt>Сложность</dt>
+		<dd><p>точно описывать множество всех возможных вредоносных строк, как правило, очень сложная задача. Пример политики описанный выше, не может быть успешно реализован путем простого поиска по подстроке "<code>javascript</code>", потому что ему будет не хватать строки вида "<code>Javascript:</code>" (где первая буква в верхнем регистре) и "<code>&amp;#106;avascript:</code>" (где первая буква кодируется как числовая ссылка на символ).</p></dd>
+		<dt>Устаривание</dt>
+		<dd><p>Даже если идеальный черный список был бы разработан, он окажется бесполезным если новую функцию добавленную в браузер будет возможно использовать для атаки. Например, если черный список для валидации HTML был разработан до введения в HTML5 атрибута <code>onmousewheel</code> он (черный список) не сможет остановить злоумышленника который будет использовать этот атрибут для выполнения XSS-атаки. Этот недостаток особенно важен в веб-разработке, которая состоит из множества различных технологий, которые постоянно обновляются.</p></dd>
 		</dl>
 
-		<p>Because of these drawbacks, blacklisting as a classification strategy is strongly discouraged. Whitelisting is usually a much safer approach, as we will describe next.</p>
+		<p>Из-за этих недостатков черный список настоятельно не рекомендуется как стратегия классификации. Белый список, как правило, гораздо более безопасный подход, который мы опишем далее.</p>
 
-		<h5 id="whitelisting">Whitelisting</h5>
+		<h5 id="whitelisting">Белый список</h5>
 
-		<p><em>Whitelisting</em> is essentially the opposite of blacklisting: instead of defining a forbidden pattern, a whitelist approach defines an allowed pattern and marks input as invalid if it <em>does not</em> match this pattern.</p>
+		<p><em>Белый список</em> по существу противоположен черному списку: вместо того, чтобы определять запрещенный шаблон, подход белого списка определяет разрешенный шаблон и отмечает ввод недействительным если он <em>не соответствует</em> этому шаблону.</p>
 		
-		<p>In contrast with the blacklisting example before, an example of whitelisting would be to allow users to submit custom URLs containing only the protocols <code>http:</code> and <code>https:</code>, nothing else. This approach would automatically mark a URL as invalid if it had the protocol <code>javascript:</code>, even if it appeared as "<code>Javascript:</code>" or "<code>&amp;#106;avascript:</code>".</p>
+		<p>В отличие от черных списков, примером белых списков было бы разрешить пользователям отправлять пользовательские URL-адреса, содержащие только протоколы <code>http:</code> и <code>https:</code>, ничего более. Такой подход позволил бы автоматически пометить что URL-адрес является недействительным, если он содержит протокол <code>javascript:</code>, даже если он представлен как "<code>Javascript:</code>" или "<code>&amp;#106;avascript:</code>".</p>
 
-		<p>Compared to blacklisting, there are two major benefits of whitelisting:</p>
+		<p>По сравнению с черным списком у белых списков есть два основных преимущества:</p>
 
 		<dl>
-		<dt>Simplicity</dt>
-		<dd><p>Accurately describing a set of safe strings is generally much easier than identifying the set of all malicious strings. This is especially true in common situations where user input only needs to include a very limited subset of the functionality available in a browser. For example, the whitelist described above allowing only URLs with the protocols <code>http:</code> or <code>https:</code> is very simple, and perfectly adequate for users in most situations.</dd>
-		<dt>Longevity</dt>
-		<dd><p>Unlike a blacklist, a whitelist will generally not become obsolete when a new feature is added to the browser. For example, an HTML validation whitelist allowing only the <code>title</code> attribute on HTML elements would remain safe even if it was developed before the introduction of HTML5 <code>onmousewheel</code> attribute.</p></dd>
+		<dt>Простота</dt>
+		<dd><p>Точно описывать набор безопасных строк, как правило, намного проще, чем идентифицировать набор всех вредоносных строк. Это особенно применимо в общих ситуациях, когда пользовательский ввод должен включать в себя очень ограниченный набор функциональных возможностей доступных в браузере. Например, белый список описанный выше очень просто позволяет использовать URL-адреса только с разрешенными протоколами <code>http:</code> или <code>https:</code>, и в большинстве ситуаций этого вполне достаточно для пользователей.</dd>
+		<dt>Долговечность</dt>
+		<dd><p>В отличие от черного списка, белый список, как правило, не становятся устаревшими, когда новая функция добавляется в браузер. Например, HTML валидация белым списком позволяет только <code>title</code> атрибутам HTML-элементов оставаться безопасными, даже если он (белый список) был разработан до введения <code>onmousewheel</code> атрибута HTML5.</p></dd>
 		</dl>
 
 
-		<h4 id="validation-outcome">Validation outcome</h4>
+		<h4 id="validation-outcome">Результат валидации</h4>
 
-		<p>When input has been marked as invalid, one of two actions can be taken:</p>
-
-		<dl>
-		<dt>Rejection</dt>
-		<dd><p>The input is simply rejected, preventing it from being used elsewhere in the website.</p></dd>
-		<dt>Sanitisation</dt>
-		<dd><p>All invalid parts of the input are removed, and the remaining input is used normally by the website.</p></dd>
-		</dl>
-
-		<p>Of these two, rejection is the simplest approach to implement. That being said, sanitisation can be more useful since it allows a broader range of input from the user. For example, if a user submits a credit card number, a sanitisation routine that removes all non-digit characters would prevent code injection as well as allowing the user to enter the number either with or without hyphens.</p>
-
-		<p>If you decide to implement sanitisation, you must make sure that the sanitisation routine itself doesn't use a blacklisting approach. For example, the URL "<code>Javascript:...</code>", even when identified as invalid using a whitelist approach, would get past a sanitisation routine that simply removes all instances of "<code>javascript:</code>". For this reason, well-tested libraries and frameworks should be used for sanitisation whenever possible.</p>
-
-		<h3 id="prevention-advice">Which prevention technique to use</h3>
-
-		<p>Encoding should be your first line of defense against XSS, because its very purpose is to neutralize data so that it cannot be interpreted as code. In some cases, encoding needs to be complemented with validation, as explained earlier. This encoding and validation should be outbound, because only when the input is included in a page do you know which context to encode and validate for.</p>
-
-		<p>As a second line of defense, you should use inbound validation to sanitize or reject data that is clearly invalid, such as links using the <code>javascript:</code> protocol. While this cannot by itself provide full security, it is a useful precaution if at any point outbound encoding and validation is improperly performed due to mistakes or errors.</p>
-
-		<p>If these two lines of defense are used consistently, your website will be protected from XSS attacks. However, due to the complexity of creating and maintaining an entire website, achieving full protection using only secure input handling can be difficult. As a third line of defense, you should also make use of Content Security Policy (CSP), which we will describe next.</p>
-
-		<h3 id="content-security-policy">Content Security Policy (CSP)</h3>
-
-		<p>The disadvantage of protecting against XSS by using only secure input handling is that even a single lapse of security can compromise your website. A recent web standard called Content Security Policy (CSP) can mitigate this risk.</p>
-
-		<p>CSP is used to constrain the browser viewing your page so that it can only use resources downloaded from trusted sources. A <em>resource</em> is a script, a stylesheet, an image, or some other type of file referred to by the page. This means that even if an attacker succeeds in injecting malicious content into your website, CSP can prevent it from ever being executed.</p>
-
-		<p>CSP can be used to enforce the following rules:</p>
+		<p>Когда пользовательский ввод был отмечен как недействительный (запрещенный), может быть принято одно из двух действий:</p>
 
 		<dl>
-		<dt>No untrusted sources</dt>
-		<dd><p>External resources can only be loaded from a set of clearly defined trusted sources.</p></dd>
-		<dt>No inline resources</dt>
-		<dd><p>Inline JavaScript and CSS will not be evaluated.</p></dd>
-		<dt>No <code>eval</code></dt>
-		<dd><p>The JavaScript <code>eval</code> function cannot be used.</p></dd>
+		<dt>Отклонение</dt>
+		<dd><p>ввод просто отклоняется, предотвращая его использование в других местах на сайте.</p></dd>
+		<dt>Дезинфекция</dt>
+		<dd><p>все недействительные части вводимых данных удаляются, а оставшийся ввод используется на веб-сайте как обычно.</p></dd>
+		</dl>
+
+		<p>Из этих двух, "отклонение" является самым простым подходом в реализации. Но считается, что дезинфекция является более полезной, поскольку она предоставляет более широкий диапазон ввода для пользователя. Например, если пользователь отправляет номер кредитной карты, дезинфекция удалит все символы не являющиеся символами и предотвратит инъекцию кода, а также позволяет пользователю ввести номер как содержащий дефисы, так и без них.</p>
+
+		<p>Если вы решили реализовать дезинфекцию, необходимо убедиться в том, что сама процедура дезинфекции не использует подход чёрного списка. Например, URL-адрес "<code>Javascript:...</code>", даже если идентифицирован с использованием белого списка как недействительный, получил бы в обход дезинфекции подпрограмму, которая просто удаляет все экземпляры "<code>javascript:</code>". По этой причине, хорошо проверенные библиотеки и фреймворки по возможности должны использовать дезинфекцию.</p>
+
+		<h3 id="prevention-advice">Какие методы использовать для профилактики?</h3>
+
+		<p>Кодирование должно быть вашей первой линией защиты от XSS-атак, его цель в обработке данных таким образом, что бы браузер не смог истолковать пользовательский ввод как код. В некоторых случаях кодирование должно быть дополнено валидацией. Кодирование и валидация должны применятся к исходящему трафику, потому что только тогда вы можете знать в каком контексте будет применен пользовательский ввод и какое кодирование и какую валидация необходимо применить.</p>
+
+		<p>В качестве второй линии обороны вы должны применять на входящих данных дезинфекцию или отклонение явно недействительного пользовательского ввода, например, ссылок с помощью протокола <code>javascript:</code>. Это не может само по себе обеспечить полную безопасность, но это полезная мера предосторожности если в любой точке защиты кодированием и валидацией из-за неправильного выполнения возможна ошибка.</p>
+
+		<p>Если эти две линии обороны используются последовательно, ваш сайт будет защищен от XSS атак. Однако из-за сложности создания и поддержания работы веб-сайта обеспечение полной защиты с использованием только безопасной обработки пользовательского ввода может быть затруднено. В качестве третьей линии обороны вы должны использовать Политики Безопасности Контента (<i>англ. Content Security Policy</i>), далее CSP, которые мы опишем далее.</p>
+
+		<h3 id="content-security-policy">Политики Безопасности Контента (CSP)</h3>
+
+		<p>Использовать только безопасную обработку пользовательского ввода для защиты от XSS-атак недостаточно, потому что даже одна ошибка безопасности может поставить под угрозу ваш веб-сайт. Применение из нового веб-стандарта Политик Безопасности Контента (CSP) может снизить этот риск.</p>
+
+		<p>CSP используются для ограничения использования браузером веб-страницы таким образом, что он может использовать только ресурсы загруженные из надежных источников. А <em>ресурсы</em> представляют собой сценарии, таблицы стилей, изображения, или какие-либо другие типы файлов на которые есть ссылки на странице. Это означает, что даже если злоумышленнику удастся провести инъекцию вредоносного контента на вашем сайте, CSP сможет предотвратить его исполнение.</p>
+
+		<p>CSP могут быть использованы для обеспечения соблюдения следующих правил:</p>
+
+		<dl>
+		<dt>Запрет ненадежных источников</dt>
+		<dd><p>внешние ресурсы могут быть загружены только из набора четко определенных надежных источников.</p></dd>
+		<dt>Запрет встроенных ресурсов</dt>
+		<dd><p>встроенный JavaScript и CSS не будут учитываться.</p></dd>
+		<dt>Запрет <code>eval</code></dt>
+		<dd><p>запрет использования функции <code>eval</code> в JavaScript.</p></dd>
 		</dl>
 
 
-		<h4 id="csp-example">CSP in action</h4>
+		<h4 id="csp-example">CSP в действии</h4>
 
-		<p>In the following example, an attacker has succeeded in injecting malicious code into a page:</p>
+		<p>В следующем примере, злоумышленнику удалось внедрение вредоносного кода в веб-страницу:</p>
 
 		<p class="code">
 			<code>
 				<span class="html">&lt;html&gt;</span><br>
-				Latest comment:<br>
+				Последний комментарий:<br>
 				<strong class="malicious">&lt;script src="http://attacker/malicious&#8209;script.js"&gt;&lt;/script&gt;</strong><br>
 				<span class="html">&lt;/html&gt;</span>
 			</code>
 		</p>
 
-		<p>With a properly defined CSP policy, the browser would not load and execute <code>malicious&#8209;script.js</code> because <code>http://attacker/</code> would not be in the set of trusted sources. Even though the website failed to securely handle user input in this case, the CSP policy prevented the vulnerability from causing any harm.</p>
+		<p>При правильно определенной политике CSP, браузер не может загрузить и выполнить <code>malicious&#8209;script.js</code> потому что <code>http://attacker/</code> не указан как надежный источник. Даже несмотря на то, что сайту не удалось надежно обрабатывать пользовательский ввод данных в данном случае политика CSP предотвратила уязвимость и причинение какого-либо вреда.</p>
 
-		<p>Even if the attacker had injected the script code inline rather than linking to an external file, a properly defined CSP policy disallowing inline JavaScript would also have prevented the vulnerability from causing any harm.</p>
+		<p>Даже если злоумышленник провел инъекцию кодом внутрь кода сценария, а не ссылкой на внешний файл, правильно настроенная политика CSP также запретит инъекцию в код JavaScript предотвратив уязвимость и причинение какого-либо вреда.</p>
 
-		<h4 id="enabling-csp">How to enable CSP</h4>
+		<h4 id="enabling-csp">Как включить CSP?</h4>
 
-		<p>By default, browsers do not enforce CSP. To enable CSP on your website, pages must be served with an additional HTTP header: <code>Content&#8209;Security&#8209;Policy</code>. Any page served with this header will have its security policy respected by the browser loading it, provided that the browser supports CSP.</p>
+		<p>По умолчанию, браузеры не используют CSP. Для того, что бы включить SCP на своем веб-сайте, страницы должны содержать дополнительный заголовок HTTP: <code>Content&#8209;Security&#8209;Policy</code>. Любая страница содержащая этот заголовок будет применять политики безопасности во время загрузки браузером, при условии что браузер поддерживает CSP.</p>
 
-		<p>Since the security policy is sent with every HTTP response, it is possible for a server to set its policy on a page-by-page basis. The same policy can be applied to an entire website by providing the same CSP header in every response.</p>
+		<p>Поскольку политика безопасности отправляется с каждым  HTTP-ответом, есть возможность на сервере индивидуально установить политику для каждой страницы. Та же политика может быть применена ко всему веб-сайт, вставляя один и тот же заголовок CSP в каждом ответе.</p>
 
-		<p>The value of the <code>Content&#8209;Security&#8209;Policy</code> header is a string defining one or more security policies that will take effect on your website. The syntax of this string will be described next.</p>
+		<p>Значение в заголовке <code>Content&#8209;Security&#8209;Policy</code> содержит строку, определяющую одну или несколько политик безопасности, которые будут работать на вашем сайте. Синтаксис этой строки будет описан далее.</p>
 		
-		<p class="note">The example headers in this section use newlines and indentation for clarity; this should not be present in an actual header.</p>
+		<p class="note">Примеры заголовков в этом разделе используют перенос строки и отступы для простоты восприятия; они не должны присутствовать в настоящем заголовке.</p>
 
-		<h4 id="csp-syntax">Syntax of CSP</h4>
+		<h4 id="csp-syntax">Синтаксис CSP</h4>
 
-		<p>The syntax of a CSP header is as follows:</p>
+		<p>Синтаксис заголовка CSP выглядит следующим образом:</p>
 
 		<p class="code">
 			<code>
@@ -574,18 +572,18 @@
 			</code>
 		</p>
 
-		<p>This syntax is made up of two elements:</p>
+		<p>Этот синтаксис состоит из двух элементов:</p>
 
 		<ul>
-		<li><p><strong>Directives</strong> are strings specifying a type of resource, taken from a predefined list.</p></li>
-		<li><p><strong>Source expressions</strong> are patterns describing one or more servers that resources can be downloaded from.</p></li>
+		<li><p><strong>Директивы (directives)</strong> представляющие собой строки, указывающие тип ресурса, взятый из заданного списка.</p></li>
+		<li><p><strong>Выражение источника (source expressions)</strong> является моделью, описывающей один или несколько серверов от куда могут быть загружены ресурсы.</p></li>
 		</ul>
 
-		<p>For every directive, the given source expressions define which sources can be used to download resources of the respective type.</p>
+		<p>Для каждой директивы данные в выражении источника определяют какие источники можно использовать для загрузки ресурсов соответствующего типа.</p>
 
-		<h5 id="csp-directives">Directives</h5>
+		<h5 id="csp-directives">Директивы</h5>
 
-		<p>The directives that can be used in a CSP header are as follows:</p>
+		<p>Следующие директивы могут быть использованы в заголовке CSP:</p>
 
 		<ul>
 		<li><code>connect&#8209;src</code></li>
@@ -598,36 +596,36 @@
 		<li><code>style&#8209;src</code></li>
 		</ul>
 
-		<p>In addition to these, the special directive <code>default&#8209;src</code> can be used to provide a default value for all directives that have not been included in the header.</p>
+		<p>В дополнение к этому, специальная директива <code>default&#8209;src</code> может использоваться для того, чтобы обеспечить значение по умолчанию для всех директив, которые не были включены в заголовок.</p>
 
-		<h5 id="csp-source-expressions">Source expressions</h5>
+		<h5 id="csp-source-expressions">Выражение источника</h5>
 
-		<p>The syntax of a source expression is as follows:</p>
+		<p>Синтаксис для создания выражения источника выглядит следующим образом:</p>
 
 		<p class="code">
 			<code>
-				<var class="color-1">protocol</var>://<var class="color-2">host&#8209;name</var>:<var class="color-3">port&#8209;number</var>
+				<var class="color-1">протокол</var>://<var class="color-2">имя&#8209;хоста</var>:<var class="color-3">номер&#8209;порта</var>
 			</code>
 		</p>
 
-		<p>The host name can start with <code>*.</code>, which means that any subdomain of the provided host name will be allowed. Similarly, the port number can be <code>*</code>, which means that all ports will be allowed. Additionally, the protocol and port number can be omitted. Finally, a protocol can be given by itself, which makes it possible to require that all resources be loaded using HTTPS.</p>
+		<p>Имя хоста может начинаться с <code>*</code>, это означает, что любой поддомен предоставленного имени хоста будет разрешен. Аналогично номер порта может быть представлен в виде <code>*</code>, это означает что все порты будут разрешены. Кроме того, протокол и номер порта могут быть пропущены. В случае если протокол не указан, политика будет требовать чтобы все ресурсы быть загружены с помощью HTTPS.</p>
 
-		<p>In addition to the syntax above, a source expression can alternatively be one of four keywords with special meaning (quotes included):</p>
+		<p>В дополнение к указанному выше синтаксису, выражение источника может в качестве альтернативы быть одним из четырех ключевых слов со специальным значением (кавычки включены):</p>
 
 		<dl>
 		<dt><code>'none'</code></dt>
-		<dd><p>Allows no resources.</p></dd>
+		<dd><p>запрещает ресурсы.</p></dd>
 		<dt><code>'self'</code></dt>
-		<dd><p>Allows resources from the host that served the page.</p></dd>
+		<dd><p>разрешает ресурсы с хоста на котором находится веб-страница.</p></dd>
 		<dt><code>'unsafe&#8209;inline'</code></dt>
-		<dd><p>Allows resources embedded in the page, such as inline <code>&lt;script&gt;</code> elements, <code>&lt;style&gt;</code> elements, and <code>javascript:</code> URLs.</p></dd>
+		<dd><p>разрешает ресурсы, содержащиеся на странице как встроенные <code>&lt;script&gt;</code> элементы, <code>&lt;style&gt;</code> элементы, и <code>javascript:</code> URL-адреса.</p></dd>
 		<dt><code>'unsafe&#8209;eval'</code></dt>
-		<dd><p>Allows the use of the JavaScript <code>eval</code> function.</p></dd>
+		<dd><p>разрешает JavaScript функцию <code>eval</code>.</p></dd>
 		</dl>
 
-		<p>Note that whenever CSP is used, inline resources and <code>eval</code> are automatically disallowed by default. Using <code>'unsafe&#8209;inline'</code> and <code>'unsafe&#8209;eval'</code> is the only way to allow them.</p>
+		<p>Обратите внимание, что всякий раз, когда используется CSP, встроенные ресурсы и <code>eval</code> по умолчанию  автоматически запрещены. Использование <code>'unsafe&#8209;inline'</code> и <code>'unsafe&#8209;eval'</code> - единственный способ для их использования.</p>
 
-		<h4 id="csp-example-policy">An example policy</h4>
+		<h4 id="csp-example-policy">Пример политики</h4>
 
 		<p class="code">
 			<code>
@@ -639,70 +637,70 @@
 			</code>
 		</p>
 
-		<p>In this example policy, the page is subject to the following restrictions:</p>
+		<p>С этим примером политики веб-страница будет иметь следующие ограничения:</p>
 
 		<ul>
-		<li><p>Scripts can be downloaded only from the host serving the page and from <code>scripts.example.com</code>.</p></li>
-		<li><p>Audio and video files cannot be downloaded from anywhere.</p></li>
-		<li><p>Image files can be downloaded from any host.</p></li>
-		<li><p>All other resources can be downloaded only from the host serving the page and from any subdomain of <code>example.com</code>.</p></li>
+		<li><p>Скрипты могут быть загружены только с хоста на котором находится веб-страница и с этого адреса: <code>scripts.example.com</code>.</p></li>
+		<li><p>Аудио и видео файлы запрещены к загрузке.</p></li>
+		<li><p>Файлы изображений могут быть загружены с любого адреса.</p></li>
+		<li><p>Все остальные ресурсы могут быть загружены только с хоста на котором находится веб-страница и из любого поддомена <code>example.com</code>.</p></li>
 		</ul>
 
-		<h4 id="csp-status">Status of CSP</h4>
+		<h4 id="csp-status">Статус CSP</h4>
 
-		<p>As of June 2013, Content Security Policy is <a href="http://www.w3.org/TR/CSP/">a W3C candidate recommendation</a>. It is being implemented by browser vendors, but parts of it are still browser-specific. In particular, the HTTP header to use can differ between browsers. Before using CSP today, consult the documentation of the browsers that you intend to support.</p>
+		<p>На июнь 2013 года Политики Безопасности Контента <a href="http://www.w3.org/TR/CSP/">рекомендуются консорциумом W3C</a>. CSP реализуется разработчиками браузеров, но некоторые его части специфичны для разных браузеров. Например, использование HTTP-заголовка может отличаться между браузерами. Перед использованием CSP обратитесь к документации браузеров, которые вы собираетесь поддерживать.</p>
 
 
-		<h2 id="summary">Summary</h2>
+		<h2 id="summary">Резюме</h2>
 
-		<h3 id="overview-summary">Summary: Overview of XSS</h3>
+		<h3 id="overview-summary">Резюме: Обзор XSS</h3>
 
 		<ul>
-		<li><p>XSS is a code injection attack made possible through insecure handling of user input.</p></li>
-		<li><p>A successful XSS attack allows an attacker to execute malicious JavaScript in a victim's browser.</p></li>
-		<li><p>A successful XSS attack compromises the security of both the website and its users.</p></li>
+		<li><p>XSS-атака представляет собой инъекцию кода, атака стала возможной благодаря незащищенной обработке пользовательского ввода.</p></li>
+		<li><p>Успешная XSS-атака позволяет злоумышленнику выполнить вредоносный JavaScript в браузере жертвы.</p></li>
+		<li><p>Успешная XSS-атака ставит под угрозу безопасность как веб-сайта, так и его пользователей.</p></li>
 		</ul>
 
 
-		<h3 id="attack-summary">Summary: XSS Attacks</h3>
+		<h3 id="attack-summary">Резюме: XSS-атаки</h3>
 
 		<ul>
 			<li>
-				<p>There are three major types of XSS attacks:</p>
+				<p>Существуют три основных типа XSS-атак:</p>
 				<ul>
-					<li><p>Persistent XSS, where the malicious input originates from the website's database.</p></li>
-					<li><p>Reflected XSS, where the malicious input originates from the victim's request.</p></li>
-					<li><p>DOM-based XSS, where the vulnerability is in the client-side code rather than the server-side code.</p></li>
+					<li><p>Хранимые XSS, где вредоносный ввод берет свое начало из базы данных веб-сайта.</p></li>
+					<li><p>Отраженные XSS, где вредоносный ввод берет свое начало от запроса жертвы.</p></li>
+					<li><p>XSS-атаки в DOM-модели, где уязвимость эксплуатируется в коде на стороне клиента, а не на стороне сервера.</p></li>
 				</ul>
 			</li>
 			<li>
-				<p>All of these attacks are performed in different ways but have the same effect if they succeed.</p>
+				<p>Все эти атаки выполняются по-разному, но имеют один и тот же эффект в случае успеха.</p>
 			</li>
 		</ul>
 
 
-		<h3 id="prevention-summary">Summary: Preventing XSS</h3>
+		<h3 id="prevention-summary">Резюме: Предотвращение XSS</h3>
 
 		<ul>
 			<li>
-				<p>The most important way of preventing XSS attacks is to perform secure input handling.</p>
+				<p>Самый важный способ предотвращения XSS атак, это выполнение безопасной обработки ввода.</p>
 				<ul>
-					<li><p>Most of the time, encoding should be performed whenever user input is included in a page.</p></li>
-					<li><p>In some cases, encoding has to be replaced by or complemented with validation.</p></li>
-					<li><p>Secure input handling has to take into account which context of a page the user input is inserted into.</p></li>
-					<li><p>To prevent all types of XSS attacks, secure input handling has to be performed in both client-side and server-side code.</p></li>
+					<li><p>Кодирование должно выполняться всякий раз, когда включен пользовательский ввод на странице.</p></li>
+					<li><p>В некоторых случаях кодирование должно быть заменено или дополнено валидацией.</p></li>
+					<li><p>Безопасная обработка ввода должна учитывать в какой контекст страницы вставляется пользовательский ввод.</p></li>
+					<li><p>Для того, чтобы предотвратить все виды XSS-атак безопасная обработка ввода должна выполнятся в коде как на стороне клиента, так и на стороне сервера.</p></li>
 				</ul>
 			</li>
 			<li>
-				<p>Content Security Policy provides an additional layer of defense for when secure input handling fails.</p>
+				<p>Политики Безопасности Контента (CSP) обеспечивают дополнительный уровень защиты в случае если безопасная обработка ввода содержит ошибку.</p>
 			</li>
 		</ul>
 		
-		<h2 id="appendix">Appendix</h2>		
+		<h2 id="appendix">Приложение</h2>		
 		
-		<h3 id="xss-terminology">Terminology</h3>
+		<h3 id="xss-terminology">Терминология</h3>
 
-		<p>It should be noted that there is overlap in the terminology currently used to describe XSS: a DOM-based XSS attack is also either persistent or reflected at the same time; it's not a separate type of attack. There is no widely accepted terminology that covers all types of XSS without overlap. Regardless of the terminology used to describe XSS, however, the most important thing to identify about any given attack is where the malicious input comes from and where the vulnerability is located.</p>
+		<p>Следует отметить, что существует перекрестие в терминологии используемой для описания XSS: XSS-атака в DOM-модели может быть либо хранимой либо отраженной; это не отдельные виды атак. Не существует общепринятой терминологии, которая охватывает все типы XSS без смешивания. Независимо от терминологии используемой для описания XSS, самое главное определить тип атаки, это возможно если знать от куда поступает вредоносный ввод и где находится уязвимость.</p>
 		
 		<footer>
 			<p class="copyright">
@@ -711,6 +709,7 @@
 			</p>
 			<p>The source code for <i>Excess XSS</i> is available on <a href="https://github.com/JakobKallin/Excess-XSS">GitHub</a>.</p>
 			<p><i>Excess XSS</i> was created in 2013 as part of the <a href="http://www.cse.chalmers.se/edu/course/TDA602/">Language-Based Security</a> course at <a href="http://www.chalmers.se/en/">Chalmers University of Technology</a>.</p>
+			<p>Перевод на русский язык выполнил <a href="https://a888r.ru">A888R</a>, оригинальный текст на английском языке: <a href="http://excess-xss.com/">excess-xss.com</a>, замечания, предложения и ошибки в переводе слать <a href="mailto:a888r@a888r.ru">сюда</a>.</p>
 			<p>Have you found an error or omission in <i>Excess XSS</i>? <a href="https://github.com/JakobKallin/Excess-XSS/issues/new">Create an issue</a> or <a href="mailto:jakobkallin@gmail.com">send an email</a>.</p>
 		</footer>
 	</body>
