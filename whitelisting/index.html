@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="description" content="A comprehensive tutorial on cross-site scripting.">
+        <title>Excess XSS: A comprehensive tutorial on cross-site scripting</title>
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Ubuntu:400,700,400italic,700italic">
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic,700italic">
+        <link rel="stylesheet" href="/style.css">
+    </head>
+    <body>
+        <main>
+            <h2>How to implement whitelisting securely</h2>
+            
+            <p><a href="/">The Excess XSS tutorial</a> recommends that when you need to sanitise HTML, you should use a whitelist approach and further make sure that you do not accidentally implement it using a blacklist approach. In light of recent security vulnerabilities caused by this very mistake, this addendum describes in detail what that advice specifically means.</p>
+            
+            <p>Note: While this addendum specifically deals with whitelisting of HTML, the approach presented here is possible and suitable to use for whitelisting of any structured data.</p>
+
+            <h3>Summary</h3>
+            <p>Do not whitelist HTML by taking the user-provided document, removing parts of it, and returning the document. Instead, create a new document, add values to it based on the user-provided document, and return the new document. The former approach retains any values that you forget to consider in your whitelisting routine, giving you blacklisting-in-disguise and potentially causing vulnerabilities. The latter approach only ever allows values that you explicitly create, making it a true whitelisting approach.</p>
+
+            <h3>The problem</h3>
+            <p>Consider the following pseudocode of an HTML whitelisting routine:</p>
+
+            <p class="code">
+                <code>
+                    when sanitising a document<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;for each element in document<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if element is not in whitelist<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove element from document<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;return document
+                </code>
+            </p>
+
+            <p>Can you spot the error? The whitelisting of elements itself occurs on the third line, so that part is fine. The problem is that the routine only considers elements and will by default retain everything else, including attributes, text nodes, comments, and any other type of node. If the user-provided document contains malicious values of any of those types, they will be retained even though they are not in the whitelist. From now on, for lack of a more technical term, we will call this approach "blacklisting-in-disguise".</p>
+
+            <h3>A partial, but insufficient, fix</h3>
+
+            <p>It is clear from the example above that an HTML whitelisting routine must look at all nodes, not just elements, in order to be effective. Our first attempt at a fix might look like this:</p>
+            
+            <p class="code">
+                <code>
+                when sanitising a document<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;for each node in document<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if node is not in whitelist<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remove node from document<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;return document
+                </code>
+            </p>
+
+            <p>It's the same code as above, except with every instance of <code>element</code> replaced with <code>node</code>. Can you spot the remaining error? While all nodes, not just elements, are now taken care of, we still retain everything in the document that is not a node. Is that secure? I don't know—and that's the point. If security is our main priority and we ever find ourselves not knowing the answer to that question, we should assume that the answer is no, and that what is unknown is also unsafe. In this case, we should assume that the HTML data model includes values that are not nodes and that they can be used for malicious purposes—thus making even this implementation of our whitelisting routine insecure.</p>
+
+            <h3>A complete fix: reconstruction instead of deconstruction</h3>
+
+            <p>At this point, you might feel that we are simply having a philosophical discussion about the limits of knowledge, that there might always be unknown unknowns, and that we can thus never <em>really</em> implement a completely secure whitelisting routine. It's true that there might always be unknown unknowns—and that's exactly the point raised above. There is, however, a way of handling this uncertainty that we will refer to as "reconstruction", in contrast with the "deconstruction" used above.</p>
+
+            <p>Simply put, the idea is that instead of removing parts of the user-provided document ("deconstruction"), we create an entirely new, blank document and then recreate the user-provided document by examining it and creating our own version of every value that matches the whitelist ("reconstruction"). Consider the following pseudocode of a reconstructing HTML whitelisting routine:</p>
+            
+            <p class="code">
+                <code>
+                    when sanitising an unsafe document<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;let safe document be a blank document<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;for each element in unsafe document<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if element is in whitelist<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;create an element of the same type in safe document<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;return safe document
+                </code>
+            </p>
+
+            <p>Do you notice the crucial difference? At no point in the routine do we copy any part of the unsafe document into the safe document. Instead, we use the structure of the unsafe document as our guide for creating an entirely new, safe document that looks just like it, except with malicious parts omitted. The result is that we never have to deal with unknown malicious parts of the user-provided document, as we reconstruct the safe document using only operations that we explicitly call for.</p>
+            
+            <p>Like any skillfully made replica, the reconstructed version will look the same but not contain any malicious or unnecessary parts, just like a reconstructed statue might be hollow or made of more durable materials. (This specific whitelisting routine is clearly inadequate in a real-world scenario as it only ever creates elements and doesn't even create text nodes, but the same principle applies regardless.)</p>
+
+            <h3>Libraries and frameworks</h3>
+            <p><a href="/">The Excess XSS tutorial</a> ends the brief discussion on blacklisting-in-disguise by recommending the use of well-tested libraries and frameworks for sanitisation. Does this mean that the problem is already solved and you don't need to worry about it? Unfortunately, no. Even the official sanitisation routines for major projects use or have used blacklisting-in-disguise, causing potential vulnerabilities like the retention of <a href="https://github.com/rails/rails-html-sanitizer/commit/63903b0eaa6d2a4e1c91bc86008256c4c8335e78">CDATA nodes</a> and <a href="https://github.com/flavorjones/loofah/issues/80">nodes outside of the root element</a>.</p>
+
+            <h3>The performance question</h3>
+
+            <p>Some readers will wonder if the approach of creating a new document is significantly slower than altering an existing document and thus unacceptable. Is it? I don't know, and just as with other performance questions, giving an informed answer requires either measurements or a thorough knowledge of the internals of the tools used. Whatever the answer is, make sure that you understand and accept the risks involved before deciding to use deconstruction instead of reconstruction.</p>
+        </main>
+    </body>
+</html>
