@@ -14,7 +14,7 @@
             <p class="subtitle">A comprehensive tutorial on cross-site scripting</p>
             <p class="credits">Created by <a href="https://github.com/JakobKallin">Jakob Kallin</a> and <a href="http://se.linkedin.com/in/irenelobovalbuena">Irene Lobo Valbuena</a></p>
         </header>
-        
+
         <ol class="toc">
             <li><a href="#xss-overview">Overview</a></li><!--
             --><li><a href="#xss-attacks">XSS Attacks</a></li><!--
@@ -162,7 +162,7 @@
         <h3 id="xss-types">Types of XSS</h3>
 
         <p>While the goal of an XSS attack is always to execute malicious JavaScript in the victim's browser, there are few fundamentally different ways of achieving that goal. XSS attacks are often divided into three types:</p>
-        
+
         <ul>
             <li>
                 <p><strong>Persistent XSS</strong>, where the malicious string originates from the website's database.</p>
@@ -480,7 +480,7 @@
         <h5 id="whitelisting">Whitelisting</h5>
 
         <p><em>Whitelisting</em> is essentially the opposite of blacklisting: instead of defining a forbidden pattern, a whitelist approach defines an allowed pattern and marks input as invalid if it <em>does not</em> match this pattern.</p>
-        
+
         <p>In contrast with the blacklisting example before, an example of whitelisting would be to allow users to submit custom URLs containing only the protocols <code>http:</code> and <code>https:</code>, nothing else. This approach would automatically mark a URL as invalid if it had the protocol <code>javascript:</code>, even if it appeared as "<code>Javascript:</code>" or "<code>&amp;#106;avascript:</code>".</p>
 
         <p>Compared to blacklisting, there are two major benefits of whitelisting:</p>
@@ -558,7 +558,7 @@
         <p>Since the security policy is sent with every HTTP response, it is possible for a server to set its policy on a page-by-page basis. The same policy can be applied to an entire website by providing the same CSP header in every response.</p>
 
         <p>The value of the <code>Content&#8209;Security&#8209;Policy</code> header is a string defining one or more security policies that will take effect on your website. The syntax of this string will be described next.</p>
-        
+
         <p class="note">The example headers in this section use newlines and indentation for clarity; this should not be present in an actual header.</p>
 
         <h4 id="csp-syntax">Syntax of CSP</h4>
@@ -697,27 +697,42 @@
                 <p>Content Security Policy provides an additional layer of defense for when secure input handling fails.</p>
             </li>
         </ul>
-        
-        <h2 id="appendix">Appendix</h2>        
-        
+
+        <h2 id="appendix">Appendix</h2>
+
         <h3 id="xss-terminology">Terminology</h3>
 
         <p>It should be noted that there is overlap in the terminology currently used to describe XSS: a DOM-based XSS attack is also either persistent or reflected at the same time; it's not a separate type of attack. There is no widely accepted terminology that covers all types of XSS without overlap. Regardless of the terminology used to describe XSS, however, the most important thing to identify about any given attack is where the malicious input comes from and where the vulnerability is located.</p>
-        
+
         <h2 id="addendums">Addendums</h2>
-        
+
         <ul>
             <li><a href="/whitelisting">How to implement whitelisting securely</a> <time datetime="2016-07-09T20:00:00.000Z">(July 9th, 2016)</time></li>
         </ul>
-        
+
         <footer>
             <p class="copyright">
-                <i>Excess XSS</i> by <a href="https://github.com/JakobKallin">Jakob Kallin</a> and <a href="http://se.linkedin.com/in/irenelobovalbuena">Irene Lobo Valbuena</a> is licensed under a 
+                <i>Excess XSS</i> by <a href="https://github.com/JakobKallin">Jakob Kallin</a> and <a href="http://se.linkedin.com/in/irenelobovalbuena">Irene Lobo Valbuena</a> is licensed under a
                 <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/deed.en_US">Creative Commons Attribution-ShareAlike 3.0 Unported License</a>.
             </p>
             <p>The source code for <i>Excess XSS</i> is available on <a href="https://github.com/JakobKallin/Excess-XSS">GitHub</a>.</p>
             <p><i>Excess XSS</i> was created in 2013 as part of the <a href="http://www.cse.chalmers.se/edu/course/TDA602/">Language-Based Security</a> course at <a href="http://www.chalmers.se/en/">Chalmers University of Technology</a>.</p>
             <p>Have you found an error or omission in <i>Excess XSS</i>? <a href="https://github.com/JakobKallin/Excess-XSS/issues/new">Create an issue</a> or <a href="mailto:jakobkallin@gmail.com">send an email</a>.</p>
         </footer>
+
+        <script type="text/javascript">
+            var _paq = _paq || [];
+            _paq.push(["setDomains", ["*.excess-xss.com"]]);
+            _paq.push(['trackPageView']);
+            _paq.push(['enableLinkTracking']);
+            (function() {
+                var u="//jakobkallin.com/piwik/";
+                _paq.push(['setTrackerUrl', u+'piwik.php']);
+                _paq.push(['setSiteId', '1']);
+                var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+                g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+            })();
+        </script>
+        <noscript><img src="//jakobkallin.com/piwik/piwik.php?idsite=1" style="border:0;" alt=""></noscript>
     </body>
 </html>

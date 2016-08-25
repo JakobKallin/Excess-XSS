@@ -11,9 +11,9 @@
     <body>
         <main>
             <h2>How to implement whitelisting securely</h2>
-            
+
             <p><a href="/">The Excess XSS tutorial</a> recommends that when you need to sanitise HTML, you should use a whitelist approach and further make sure that you do not accidentally implement it using a blacklist approach. In light of recent security vulnerabilities caused by this very mistake, this addendum describes in detail what that advice specifically means.</p>
-            
+
             <p>Note: While this addendum specifically deals with whitelisting of HTML, the approach presented here is possible and suitable to use for whitelisting of any structured data.</p>
 
             <h3>Summary</h3>
@@ -37,7 +37,7 @@
             <h3>A partial, but insufficient, fix</h3>
 
             <p>It is clear from the example above that an HTML whitelisting routine must look at all nodes, not just elements, in order to be effective. Our first attempt at a fix might look like this:</p>
-            
+
             <p class="code">
                 <code>
                 when sanitising a document<br>
@@ -55,7 +55,7 @@
             <p>At this point, you might feel that we are simply having a philosophical discussion about the limits of knowledge, that there might always be unknown unknowns, and that we can thus never <em>really</em> implement a completely secure whitelisting routine. It's true that there might always be unknown unknowns—and that's exactly the point raised above. There is, however, a way of handling this uncertainty that we will refer to as "reconstruction", in contrast with the "deconstruction" used above.</p>
 
             <p>Simply put, the idea is that instead of removing parts of the user-provided document ("deconstruction"), we create an entirely new, blank document and then recreate the user-provided document by examining it and creating our own version of every value that matches the whitelist ("reconstruction"). Consider the following pseudocode of a reconstructing HTML whitelisting routine:</p>
-            
+
             <p class="code">
                 <code>
                     when sanitising an unsafe document<br>
@@ -68,9 +68,9 @@
             </p>
 
             <p>Do you notice the crucial difference? At no point in the routine do we copy any part of the unsafe document into the safe document. Instead, we use the structure of the unsafe document as our guide for creating an entirely new, safe document that looks just like it, except with malicious parts omitted. The result is that we never have to deal with unknown malicious parts of the user-provided document, as we reconstruct the safe document using only operations that we explicitly call for.</p>
-            
+
             <p>Like any skillfully made replica, the reconstructed version will look the same but not contain any malicious or unnecessary parts, just like a reconstructed statue might be hollow or made of more durable materials. (This specific whitelisting routine is clearly inadequate in a real-world scenario as it only ever creates elements and doesn't even create text nodes, but the same principle applies regardless.)</p>
-            
+
             <p>To be honest, there's really no need for me to introduce ad-hoc terminology like "reconstruction" and "deconstruction" to refer to these two approaches to whitelisting. For all practical purposes, deconstruction is blacklisting and should be referred to as such.</p>
 
             <h3>Libraries and frameworks</h3>
@@ -80,5 +80,20 @@
 
             <p>Some readers will wonder if the approach of creating a new document is significantly slower than altering an existing document and thus unacceptable. Is it? I don't know, and just as with other performance questions, giving an informed answer requires either measurements or a thorough knowledge of the internals of the tools used. Whatever the answer is, make sure that you understand and accept the risks involved before deciding to use deconstruction instead of reconstruction.</p>
         </main>
+
+        <script type="text/javascript">
+            var _paq = _paq || [];
+            _paq.push(["setDomains", ["*.excess-xss.com"]]);
+            _paq.push(['trackPageView']);
+            _paq.push(['enableLinkTracking']);
+            (function() {
+                var u="//jakobkallin.com/piwik/";
+                _paq.push(['setTrackerUrl', u+'piwik.php']);
+                _paq.push(['setSiteId', '1']);
+                var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+                g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+            })();
+        </script>
+        <noscript><img src="//jakobkallin.com/piwik/piwik.php?idsite=1" style="border:0;" alt=""></noscript>
     </body>
 </html>
