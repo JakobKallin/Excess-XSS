@@ -16,6 +16,7 @@ html {
 }
 
 body {
+    padding: 1em;
     font-size: 1em;
     line-height: 1.75;
     font-family: Ubuntu, sans-serif;
@@ -38,59 +39,87 @@ header, footer {
         hsl(0, 0%, 0%) 100%
     );
     color: white;
-    padding-top: 4em;
-    padding-bottom: 4em;
+    margin: -1em;
+    padding: 2em 1em;
 }
     
+header {
+    margin-bottom: 1em;
+}
+
+@media (min-width: 30em) {
+    header, footer {
+        padding: 4em;
+    }
+        
     header {
         margin-bottom: 4em;
     }
-    
-        header h1 {
-            margin-bottom: 0.25em;
-            font-size: 6em;
-        }
-        
-        header .subtitle {
-            font-size: 1.25em;
-            font-style: italic;
-        }
+}
 
-        header .credits {
-            font-size: 1em;
-        }
-        
-        header a:link, footer a:link, header a:visited, footer a:visited {
-            color: hsl(200, 100%, 50%);
-        }
-    
-    main {
-        margin-bottom: 4em;
-    }    
-    
+header h1 {
+    margin-bottom: 0.25em;
+    font-size: 3em;
+}
+
+@media (min-width: 30em) {
+    header h1 {
+        font-size: 6em;
+    }
+}
+
+header .subtitle {
+    font-size: 1.25em;
+    font-style: italic;
+}
+
+header .credits {
+    font-size: 1em;
+    margin-bottom: 0;
+}
+
+header a:link, footer a:link, header a:visited, footer a:visited {
+    color: hsl(200, 100%, 50%);
+}
+
+main {
+    margin-bottom: 4em;
+}    
+
+footer {
+    margin-top: 2em;
+    padding: 1em;
+}
+
+@media (min-width: 30em) {
     footer {
         margin-top: 4em;
-        padding-top: 2em;
-        padding-bottom: 2em;
+        padding: 2em;
     }
-    
-    footer p {
-        line-height: 1.25;
-    }
-    
-    footer .copyright {
-        padding-top: 4em;
-        background-image: url('https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-sa.svg');
-        background-repeat: no-repeat;
-        background-position: center top;
-        background-size: auto 3em;
-    }
+}
+
+footer p {
+    line-height: 1.25;
+}
+
+footer .copyright {
+    padding-top: 4em;
+    background-image: url('https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-sa.svg');
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: auto 3em;
+}
 
 .toc {
     padding: 0;
     text-align: center;
 }
 
+.toc li {
+    display: block;
+}
+
+@media (min-width: 30em) {
     .toc li {
         display: inline;
         padding: 0 1em;
@@ -99,6 +128,7 @@ header, footer {
     .toc li + li {
         border-left: 0.1em solid hsl(0, 0%, 75%);
     }
+}
 
 p, ul, dl {
     margin-top: 1em;
@@ -110,7 +140,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 h2, h3, h4, h5, h6 {
-    margin-top: 2em;
+    margin-top: 1em;
+    line-height: 1.25;
+}
+
+@media (min-width: 30em) {
+    h2, h3, h4, h5, h6 {
+        margin-top: 2em;
+    }
 }
 
 h2 {
@@ -132,8 +169,8 @@ h5 {
 }
 
 ul, ol, dl {
-    padding-left: 3em;
-    padding-right: 3em;
+    padding-left: 2em;
+    padding-right: 2em;
 }
 
     li p, dd p {
@@ -153,7 +190,6 @@ ul, ol, dl {
     dt {
         font-weight: bold;
         float: left;
-        height: 1.75em;
     }
 
     dt:after {
@@ -178,12 +214,18 @@ figure.image {
     
     figure.image img {
         display: block;
+        width: 100%;
+        height: auto;
         margin: 1em auto;
     }
     
     figure.image figcaption ol {
         padding: 0;
     }
+
+figure {
+    overflow: auto;
+}
 
 table {
     width: 100%;
@@ -248,6 +290,8 @@ p.code {
         hsl(0, 0%, 25%)
     );
     text-shadow: 0 0 0.25em black;
+    white-space: nowrap;
+    overflow: auto;
 }
     
     p.code .color-1 {
